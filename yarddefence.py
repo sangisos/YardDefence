@@ -73,7 +73,6 @@ class GameWindow(Canvas):
 
 def main():
 	game=GameWindow()
-	#game.menu()
 	root.mainloop()
 
 if __name__ == "__main__":

@@ -4,6 +4,11 @@ try:  # import as appropriate for 2.x vs. 3.x
 except:
     from Tkinter import Tk,Canvas,Toplevel
 from PIL import Image,ImageTk
+import os
+from random import randint
+
+
+
 root=Tk()
 
 class GameWindow(Canvas):
@@ -27,18 +32,58 @@ class GameWindow(Canvas):
         
         
     def menu(self):
-        self.level=3
+        self.level=1
         self.initGame()
 
 
     def initGame(self):
         self.background=Background(self)
+        self.activeEnemys=[]
+        self.deadEnemys=[]
         self.after(0,self.doOneFrame)
+        self.after(0,self.createEnemy)
         
+    def createEnemy(self):
+        self.activeEnemys.append(enemy2(self))
+        self.after(randint(500/self.level,3000/self.level),self.createEnemy)
+        
+    
     def doOneFrame(self):
+        # Commented for debug. Uncomment to loop: 
         self.after(30,self.doOneFrame)
-        ### Skriv kod efter här för att visa en frame
         
+        ### Skriv kod efter här för att visa en frame
+        #Darth.enemyimg=["images/lifeIcon.gif"]
+        
+        
+        
+        
+        
+        root.update()
+    
+class MetaGameObject(type):
+    def __new__(mcs, classname, bases, dictionary):
+        try:
+            imageDir=os.curdir + os.sep + "images" + os.sep + str(classname)
+            filenames=[os.path.join(imageDir, f) for f in os.listdir(imageDir) if f.endswith(".gif")]
+            filenames.sort()
+            dictionary["eliminatedImage"]=ImageTk.PhotoImage(image=Image.open(filenames.pop()))
+            dictionary["enemyimg"] = [ImageTk.PhotoImage(image=Image.open(filename)) for filename in filenames]
+        except:
+            pass
+        return type.__new__(mcs, classname, bases, dictionary)
+
+class GameObject:
+    '''All object that show pictures on screen should inherit the GameObjectclass'''
+    __metaclass__=MetaGameObject
+    
+    def __init__(self, canvas):
+        self.canvas=canvas
+        self.imageID = canvas.create_image(canvas.width-50,randint(100,canvas.height-100),anchor="c",image=self.__class__.enemyimg[0])
+        
+
+class enemy2(GameObject):
+    '''en fiende'''
 
 class Background(ImageTk.PhotoImage):
     def __init__(self, canvas):
@@ -49,43 +94,6 @@ class Background(ImageTk.PhotoImage):
         ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
         self.imageID = canvas.create_image(0,0,anchor="nw",image=self)
         canvas.tag_lower(self)
-        
-    '''
-    def setBackground(self):
-        filename = "images/background" + str(self.level) + ".gif"
-        
-        self.bgImageObj = Image.open(filename)
-        
-        rezisedImageObj = self.bgImageObj.resize((self.canvas.width, self.canvas.height), Image.ANTIALIAS)
-        
-        self.bgImage = ImageTk.PhotoImage(rezisedImageObj)
-        
-        self.bgImageID = self.create_image(0,0,anchor="nw",image=self.bgImage)
-        self.tag_lower(self.bgImageID)
-        
-        root.update()
-    
-    
-    def resizeBackground(self):
-        print "resizeBg "+str(self.getWidth()) + " " + str(time.clock())
-        self.delete(self.bgImageID)
-        
-        rezisedImageObj = self.bgImageObj.resize((self.getWidth(), self.getHeight()), Image.ANTIALIAS)
-        
-        self.bgImage = ImageTk.PhotoImage(rezisedImageObj)
-        
-        self.bgImageID = self.create_image(0,0,anchor="nw",image=self.bgImage)
-        self.tag_lower(self.bgImageID)
-        
-    
-    def removeBackground(self):
-        self.delete(self.bgImageID)
-        del self.bgImageID
-        del self.bgImage
-	
-        '''
-
-
 
 def main():
 	game=GameWindow()

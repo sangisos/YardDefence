@@ -27,24 +27,36 @@ class GameWindow(Canvas):
         
         
     def menu(self):
-        self.level=1
+        self.level=3
         self.initGame()
 
 
     def initGame(self):
-        self.setBackground()
+        self.background=Background(self)
         self.after(0,self.doOneFrame)
         
     def doOneFrame(self):
-        
         self.after(30,self.doOneFrame)
-    
+        ### Skriv kod efter här för att visa en frame
+        
+
+class Background(ImageTk.PhotoImage):
+    def __init__(self, canvas):
+        self.canvas=canvas
+        filename = "images/background" + str(canvas.level) + ".gif"
+        image = Image.open(filename)
+        rezisedImageObj = image.resize((canvas.width, canvas.height), Image.ANTIALIAS)
+        ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
+        self.imageID = canvas.create_image(0,0,anchor="nw",image=self)
+        canvas.tag_lower(self)
+        
+    '''
     def setBackground(self):
         filename = "images/background" + str(self.level) + ".gif"
         
         self.bgImageObj = Image.open(filename)
         
-        rezisedImageObj = self.bgImageObj.resize((self.width, self.height), Image.ANTIALIAS)
+        rezisedImageObj = self.bgImageObj.resize((self.canvas.width, self.canvas.height), Image.ANTIALIAS)
         
         self.bgImage = ImageTk.PhotoImage(rezisedImageObj)
         
@@ -53,7 +65,7 @@ class GameWindow(Canvas):
         
         root.update()
     
-    '''	
+    
     def resizeBackground(self):
         print "resizeBg "+str(self.getWidth()) + " " + str(time.clock())
         self.delete(self.bgImageID)
@@ -64,14 +76,14 @@ class GameWindow(Canvas):
         
         self.bgImageID = self.create_image(0,0,anchor="nw",image=self.bgImage)
         self.tag_lower(self.bgImageID)
-        '''
+        
     
     def removeBackground(self):
         self.delete(self.bgImageID)
         del self.bgImageID
         del self.bgImage
 	
-
+        '''
 
 
 

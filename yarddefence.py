@@ -33,7 +33,11 @@ class GameWindow(Canvas):
 
     def initGame(self):
         self.setBackground()
+        self.after(0,self.doOneFrame)
         
+    def doOneFrame(self):
+        
+        self.after(30,self.doOneFrame)
     
     def setBackground(self):
         filename = "images/background" + str(self.level) + ".gif"

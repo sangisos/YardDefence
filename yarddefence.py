@@ -32,8 +32,7 @@ class GameWindow(Canvas):
         
     def menu(self):
 		self.level=1
-		menu = Menu()
-		wait = canvas.getMouse()
+		menu = Menu(self)
 		self.initGame()
 
 
@@ -84,7 +83,7 @@ class Background(ImageTk.PhotoImage):
 		
 class Menu(GameObject):
 	def __init__(self,canvas):
-		GameObject.__init__(self,500,500)
+		GameObject.__init__(self,canvas,500,500)
 
 def main():
     game=GameWindow()

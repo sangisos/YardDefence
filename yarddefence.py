@@ -32,8 +32,7 @@ class GameWindow(Canvas):
         
     def menu(self):
 		self.level=1
-		menu = Menu(self)
-		self.initGame()
+		Menu(self)
 
 
     def initGame(self):
@@ -51,9 +50,7 @@ class GameWindow(Canvas):
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
         self.after(30,self.doOneFrame)
-        
         ### Skriv kod efter här för att visa en frame
-        #Darth.enemyimg=["images/lifeIcon.gif"]
         
         
         
@@ -83,7 +80,14 @@ class Background(ImageTk.PhotoImage):
 		
 class Menu(GameObject):
 	def __init__(self,canvas):
-		GameObject.__init__(self,canvas,500,500)
+            x,y = canvas.width/2,canvas.height/2
+            GameObject.__init__(self,canvas,x,y,'c')
+            Button(canvas,x-50,y+50)
+            
+class Button(GameObject):
+    def __init__(self,canvas,x,y,text):
+        GameObject.__init__(self,canvas,x,y,'c')
+        canvas.create_text(x,y,text=text,anchor='c')
 
 def main():
     game=GameWindow()

@@ -23,6 +23,6 @@ class GameObject:
     '''All object that show pictures on screen should inherit the GameObjectclass, they have to have a folder in the image folder namnet <classname>'''
     __metaclass__=MetaGameObject
     
-    def __init__(self,canvas,x,y):
+    def __init__(self,canvas,x,y,anchor='nw'):
         self.canvas=canvas
-        self.imageID = self.canvas.create_image(x,y,anchor="nw",image=self.__class__.images[0])
+        self.imageID = self.canvas.create_image(x,y,anchor=anchor,image=self.__class__.images[0])

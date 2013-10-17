@@ -6,6 +6,7 @@ except:
 root=Tk()
 from PIL import Image,ImageTk
 import os
+import time
 from random import randint
 from gameobject import GameObject
 import heroLife
@@ -38,6 +39,7 @@ class GameWindow(Canvas):
 		self.background=Background(self)
 		self.activeEnemys=[]
 		self.deadEnemys=[]
+		StoryTeller(self)
 		self.after(0,self.doOneFrame)
 		self.after(0,self.createEnemy)
 		

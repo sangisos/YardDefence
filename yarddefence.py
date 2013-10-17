@@ -31,8 +31,10 @@ class GameWindow(Canvas):
         
         
     def menu(self):
-        self.level=1
-        self.initGame()
+		self.level=1
+		menu = Menu()
+		wait = canvas.getMouse()
+		self.initGame()
 
 
     def initGame(self):
@@ -79,6 +81,10 @@ class Background(ImageTk.PhotoImage):
         ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
         self.imageID = canvas.create_image(0,0,anchor="nw",image=self)
         canvas.tag_lower(self)
+		
+class Menu(GameObject):
+	def __init__(self,canvas):
+		GameObject.__init__(self,500,500)
 
 def main():
     game=GameWindow()

@@ -6,6 +6,7 @@ except:
 from PIL import Image,ImageTk
 import os
 from random import randint
+import heroLife
 
 
 
@@ -37,11 +38,11 @@ class GameWindow(Canvas):
 
 
     def initGame(self):
-        self.background=Background(self)
-        self.activeEnemys=[]
-        self.deadEnemys=[]
-        self.after(0,self.doOneFrame)
-        self.after(0,self.createEnemy)
+		self.background=Background(self)
+		self.activeEnemys=[]
+		self.deadEnemys=[]
+		self.after(0,self.doOneFrame)
+		self.after(0,self.createEnemy)
         
     def createEnemy(self):
         self.activeEnemys.append(enemy2())

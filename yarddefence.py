@@ -44,7 +44,7 @@ class GameWindow(Canvas):
         self.after(0,self.createEnemy)
         
     def createEnemy(self):
-        self.activeEnemys.append(enemy2(self))
+        self.activeEnemys.append(enemy2())
         self.after(randint(500/self.level,3000/self.level),self.createEnemy)
         
     
@@ -63,26 +63,31 @@ class GameWindow(Canvas):
     
 class MetaGameObject(type):
     def __new__(mcs, classname, bases, dictionary):
-        try:
+        if not classname in ["GameObject", "Enemy"]:
             imageDir=os.curdir + os.sep + "images" + os.sep + str(classname)
             filenames=[os.path.join(imageDir, f) for f in os.listdir(imageDir) if f.endswith(".gif")]
             filenames.sort()
-            dictionary["eliminatedImage"]=ImageTk.PhotoImage(image=Image.open(filenames.pop()))
-            dictionary["enemyimg"] = [ImageTk.PhotoImage(image=Image.open(filename)) for filename in filenames]
-        except:
-            pass
+            if "Enemy" in bases:
+                dictionary["eliminatedImage"]=ImageTk.PhotoImage(image=Image.open(filenames.pop()))
+            dictionary["images"] = [ImageTk.PhotoImage(image=Image.open(filename)) for filename in filenames]
+            
         return type.__new__(mcs, classname, bases, dictionary)
 
 class GameObject:
-    '''All object that show pictures on screen should inherit the GameObjectclass'''
+    '''All object that show pictures on screen should inherit the GameObjectclass, they have to have a folder in the image folder namnet <classname>'''
     __metaclass__=MetaGameObject
     
-    def __init__(self, canvas):
-        self.canvas=canvas
-        self.imageID = canvas.create_image(canvas.width-50,randint(100,canvas.height-100),anchor="c",image=self.__class__.enemyimg[0])
+    def __init__(self,x,y):
+        self.canvas=game
+        self.imageID = self.canvas.create_image(x,y,anchor="nw",image=self.__class__.images[0])
         
-
-class enemy2(GameObject):
+class Enemy(GameObject):
+    '''Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
+    def __init__(self):
+        
+        GameObject.__init__(self,game.width-50,randint(100,game.height-100))
+        
+class enemy2(Enemy):
     '''en fiende'''
 
 class Background(ImageTk.PhotoImage):
@@ -96,8 +101,9 @@ class Background(ImageTk.PhotoImage):
         canvas.tag_lower(self)
 
 def main():
-	game=GameWindow()
-	root.mainloop()
+    global game
+    game=GameWindow()
+    root.mainloop()
 
 if __name__ == "__main__":
 	main()

@@ -91,7 +91,8 @@ class Button(GameObject):
 		
 class StoryTeller(GameObject):
 	def __init__(self,canvas):
-		GameObject.__init__(self,canvas,500,500)
+		x,y = canvas.width/2,canvas.height/2
+		GameObject.__init__(self,canvas,x,y,'c')
 
 def main():
     game=GameWindow()

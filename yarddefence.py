@@ -93,7 +93,7 @@ class StoryTeller(GameObject):
 	def __init__(self,canvas):
 		x,y = canvas.width/2,canvas.height/2
 		GameObject.__init__(self,canvas,x,y,'c')
-		canvas.create_text(x,y,text="Skjut dom vilda djuren innan dom kommer åt morotslandet!",anchor='c',fill='black')
+		canvas.create_text(x,y,text="Shoot the wild animals before they eats your carrots! Click to start hunting.",anchor='c',fill='black', font='Purisa')
 
 def main():
     game=GameWindow()

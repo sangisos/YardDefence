@@ -90,10 +90,6 @@ class Button(GameObject):
         GameObject.__init__(self,canvas,x,y,'c')
         canvas.create_text(x,y,text=text,anchor='c',fill='white')
 
-class StoryTeller(GameObject):
-	def __init__(self,canvas):
-		GameObject.__init__(self,canvas,500,500)		
-
 def main():
     game=GameWindow()
     root.mainloop()

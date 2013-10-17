@@ -9,7 +9,7 @@ import os
 import time
 from random import randint
 from gameobject import GameObject
-import heroLife
+import herolife
 
 class GameWindow(Canvas):
 	'''Spelfönstrets klass, håller koll!'''
@@ -37,6 +37,13 @@ class GameWindow(Canvas):
 
 	def initGame(self,difficulty):
 		self.background=Background(self)
+		
+		lifeList = []
+		lifePositionX = self.width/2.5
+		for x in range(3):
+			lifeList.append(herolife.HeroLife(self,lifePositionX))
+			lifePositionX = lifePositionX + 30
+			
 		self.activeEnemys=[]
 		self.deadEnemys=[]
 		StoryTeller(self)

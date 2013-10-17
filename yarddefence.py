@@ -12,7 +12,7 @@ import heroLife
 
 class GameWindow(Canvas):
     '''Spelfönstrets klass, håller koll!'''
-    def __init__(self, **kwargs):
+    def __init__(self):
         
         # Runs in fullscreen
         root.attributes('-fullscreen', True)
@@ -20,7 +20,7 @@ class GameWindow(Canvas):
         
         self.width = root.winfo_screenwidth()
         self.height = root.winfo_screenheight()
-        Canvas.__init__(self, root, width=self.width, height=self.height, **kwargs)
+        Canvas.__init__(self, root, width=self.width, height=self.height,bg="#009900")
         self.pack()
         
         root.update()
@@ -44,7 +44,7 @@ class GameWindow(Canvas):
         
     def createEnemy(self):
         self.activeEnemys.append(enemy2(self))
-        self.after(randint(500/self.level,3000/self.level),self.createEnemy)
+        self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
         
     
     def doOneFrame(self):
@@ -82,12 +82,13 @@ class Menu(GameObject):
 	def __init__(self,canvas):
             x,y = canvas.width/2,canvas.height/2
             GameObject.__init__(self,canvas,x,y,'c')
-            Button(canvas,x-50,y+50)
+            Button(canvas,x,y-50,"Play")
+            
             
 class Button(GameObject):
     def __init__(self,canvas,x,y,text):
         GameObject.__init__(self,canvas,x,y,'c')
-        canvas.create_text(x,y,text=text,anchor='c')
+        canvas.create_text(x,y,text=text,anchor='c',fill='white')
 
 def main():
     game=GameWindow()

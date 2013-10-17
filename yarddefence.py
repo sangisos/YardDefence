@@ -84,8 +84,10 @@ class Menu(GameObject):
             GameObject.__init__(self,canvas,x,y,'c')
             Button(canvas,x,y-50,"Play")
 			
+class StoryTeller(GameObject):
+	def __init__(self,canvas):
+		GameObject.__init__(self,canvas,500,500)
 		
-	
 class Button(GameObject):
     def __init__(self,canvas,x,y,text):
         GameObject.__init__(self,canvas,x,y,'c')

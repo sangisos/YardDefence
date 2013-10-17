@@ -17,7 +17,7 @@ class GameWindow(Canvas):
         # Runs in fullscreen
         root.attributes('-fullscreen', True)
         
-        
+        difficulty = 1
         self.width = root.winfo_screenwidth()
         self.height = root.winfo_screenheight()
         Canvas.__init__(self, root, width=self.width, height=self.height,bg="#009900")
@@ -35,7 +35,8 @@ class GameWindow(Canvas):
 		Menu(self)
 
 
-    def initGame(self):
+    def initGame(self,difficulty):
+		print difficulty
 		self.background=Background(self)
 		self.activeEnemys=[]
 		self.deadEnemys=[]
@@ -91,14 +92,18 @@ class Menu(GameObject):
 		mediumButton = Button(self.canvas,self.canvas.width/2,self.canvas.height/2-30,"Medium")
 		hardButton = Button(self.canvas,self.canvas.width/2,self.canvas.height/2+10,"Hard")
 		self.canvas.delete(CURRENT)
+		
+		easyButton.canvas.tag_bind(easyButton.imageID,'<Button-1>',self.difficultyButtonClick)
+		mediumButton.canvas.tag_bind(mediumButton.imageID,'<Button-1>',self.difficultyButtonClick)
+		hardButton.canvas.tag_bind(hardButton.imageID,'<Button-1>',self.difficultyButtonClick)
+	
+	def difficultyButtonClick(self,event):
+		self.canvas.initGame(2)
 			
 class Button(GameObject):
 	def __init__(self,canvas,x,y,text):
 		GameObject.__init__(self,canvas,x,y,'c')
 		canvas.create_text(x,y,text=text,anchor='c',fill='white')
-
-#class DifficultyMenu(GameObject):
-
 		
 class StoryTeller(GameObject):
 	def __init__(self,canvas):

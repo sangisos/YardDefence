@@ -1,8 +1,8 @@
 # encoding: utf-8
 try:  # import as appropriate for 2.x vs. 3.x
-    from tkinter import Tk,Canvas,Toplevel
+    from tkinter import Tk,Canvas,Toplevel,CURRENT
 except:
-    from Tkinter import Tk,Canvas,Toplevel
+    from Tkinter import Tk,Canvas,Toplevel,CURRENT
 root=Tk()
 from PIL import Image,ImageTk
 import os
@@ -80,15 +80,26 @@ class Background(ImageTk.PhotoImage):
 		
 class Menu(GameObject):
 	def __init__(self,canvas):
-            x,y = canvas.width/2,canvas.height/2
-            GameObject.__init__(self,canvas,x,y,'c')
-            Button(canvas,x,y-50,"Play")
-        
+		x,y = canvas.width/2,canvas.height/2
+		GameObject.__init__(self,canvas,x,y,'c')
+		
+		playButton = Button(canvas,x,y-50,"Play")
+		playButton.canvas.tag_bind(playButton.imageID,'<Button-1>',self.playButtonClick)
+		
+	def playButtonClick(self,event):
+		easyButton = Button(self.canvas,self.canvas.width/2,self.canvas.height/2-70,"Easy")
+		mediumButton = Button(self.canvas,self.canvas.width/2,self.canvas.height/2-30,"Medium")
+		hardButton = Button(self.canvas,self.canvas.width/2,self.canvas.height/2+10,"Hard")
+		self.canvas.delete(CURRENT)
+			
 class Button(GameObject):
-    def __init__(self,canvas,x,y,text):
-        GameObject.__init__(self,canvas,x,y,'c')
-        canvas.create_text(x,y,text=text,anchor='c',fill='white')
-        
+	def __init__(self,canvas,x,y,text):
+		GameObject.__init__(self,canvas,x,y,'c')
+		canvas.create_text(x,y,text=text,anchor='c',fill='white')
+
+#class DifficultyMenu(GameObject):
+
+		
 class StoryTeller(GameObject):
 	def __init__(self,canvas):
 		x,y = canvas.width/2,canvas.height/2

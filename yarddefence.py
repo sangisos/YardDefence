@@ -37,6 +37,7 @@ class GameWindow(Canvas):
 
 	def initGame(self,difficulty):
 		self.background=Background(self)
+		Hero(self)
 		CurrentScore(self)
 		
 		lifeList = []
@@ -73,15 +74,15 @@ class enemy2(Enemy):
     '''en fiende'''
 
 class Background(ImageTk.PhotoImage):
-    def __init__(self, canvas):
-        self.canvas=canvas
-        filename = "images/background" + str(canvas.level) + ".gif"
-        image = Image.open(filename)
-        rezisedImageObj = image.resize((canvas.width, canvas.height), Image.ANTIALIAS)
-        ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
-        self.imageID = canvas.create_image(0,0,anchor="nw",image=self)
-        canvas.tag_lower(self)
-		
+	def __init__(self, canvas):
+		self.canvas=canvas
+		filename = "images/background" + str(canvas.level) + ".gif"
+		image = Image.open(filename)
+		rezisedImageObj = image.resize((canvas.width, canvas.height), Image.ANTIALIAS)
+		ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
+		self.imageID = canvas.create_image(0,0,anchor="nw",image=self)
+		canvas.tag_lower(self)
+
 class Menu(GameObject):
 	def __init__(self,canvas):
 		x,y = canvas.width/2,canvas.height/2
@@ -103,7 +104,7 @@ class Menu(GameObject):
 	def difficultyButtonClick(self,event):
 		self.difficulty = 2
 		self.canvas.initGame(self.difficulty)
-			
+	
 class Button(GameObject):
 	def __init__(self,canvas,x,y,text):
 		GameObject.__init__(self,canvas,x,y,'c')
@@ -119,6 +120,10 @@ class CurrentScore():
 	def __init__(self,canvas):
 		currentScore = 0
 		canvas.create_text(50,50,text="Score: " + str(currentScore),anchor='c')
+		
+class Hero(GameObject):
+	def __init__(self,canvas):
+		GameObject.__init__(self,canvas,110,canvas.height/2.5,'c')
 
 def main():
     game=GameWindow()

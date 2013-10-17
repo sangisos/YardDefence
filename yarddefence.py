@@ -83,8 +83,7 @@ class Menu(GameObject):
 		x,y = canvas.width/2,canvas.height/2
         GameObject.__init__(self,canvas,x,y,'c')
         Button(canvas,x,y-50,"Play")
-            
-            
+
 class Button(GameObject):
     def __init__(self,canvas,x,y,text):
         GameObject.__init__(self,canvas,x,y,'c')

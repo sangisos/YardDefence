@@ -1,8 +1,8 @@
 # encoding: utf-8
 try:  # import as appropriate for 2.x vs. 3.x
-    from tkinter import Tk,Canvas,Toplevel
+    from tkinter import Tk,Canvas,Toplevel,CURRENT
 except:
-    from Tkinter import Tk,Canvas,Toplevel
+    from Tkinter import Tk,Canvas,Toplevel,CURRENT
 from PIL import Image,ImageTk
 import os
 from random import randint
@@ -22,7 +22,11 @@ class MetaGameObject(type):
 class GameObject:
     '''All object that show pictures on screen should inherit the GameObjectclass, they have to have a folder in the image folder namnet <classname>'''
     __metaclass__=MetaGameObject
-    
+    def mouseCallback(self,event):
+        print CURRENT
+        self.canvas.delete(CURRENT)
+        
     def __init__(self,canvas,x,y,anchor='nw'):
         self.canvas=canvas
         self.imageID = self.canvas.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
+        self.canvas.tag_bind(self.imageID,'<Button-1>',self.mouseCallback)

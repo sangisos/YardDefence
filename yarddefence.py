@@ -105,7 +105,7 @@ class StoryTeller(GameObject):
 	def __init__(self,canvas):
 		x,y = canvas.width/2,canvas.height/2
 		GameObject.__init__(self,canvas,x,y,'c')
-		canvas.create_text(x,y,text="Shoot the wild animals before they eats your carrots! Click to start hunting.",anchor='c',fill='black', font='Purisa')
+		canvas.create_text(x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nThey are freakin' CrAaaAaazzZyy!! \n\nRegards,\nLennart",anchor='c',fill='black',font=('Helvetica 11 bold'))
 
 def main():
     game=GameWindow()

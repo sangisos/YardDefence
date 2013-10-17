@@ -1,8 +1,8 @@
 # encoding: utf-8
 try:  # import as appropriate for 2.x vs. 3.x
-    from tkinter import Tk,Canvas,Toplevel,CURRENT
+    from tkinter import Canvas,CURRENT
 except:
-    from Tkinter import Tk,Canvas,Toplevel,CURRENT
+    from Tkinter import Canvas,CURRENT
 from PIL import Image,ImageTk
 import os
 from random import randint
@@ -20,13 +20,14 @@ class MetaGameObject(type):
         return type.__new__(mcs, classname, bases, dictionary)
 
 class GameObject:
-    '''All object that show pictures on screen should inherit the GameObjectclass, they have to have a folder in the image folder namnet <classname>'''
+    '''All object that show pictures on screen should inherit the GameObjectclass, they have to have a folder in the image folder namned <classname>.'''
     __metaclass__=MetaGameObject
+    
     def mouseCallback(self,event):
-        print CURRENT
-        self.canvas.delete(CURRENT)
+        '''The base mouse callback method bound to <Button-1>. Overwrite to implement your own callback, use Tkinter.CURRENT as tag/id for object currently under mouse pointer'''
+        pass
         
     def __init__(self,canvas,x,y,anchor='nw'):
         self.canvas=canvas
-        self.imageID = self.canvas.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
-        self.canvas.tag_bind(self.imageID,'<Button-1>',self.mouseCallback)
+        self.imageId = self.canvas.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
+        self.canvas.tag_bind(self.imageId,'<Button-1>',self.mouseCallback)

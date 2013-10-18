@@ -25,13 +25,17 @@ class GameWindow(Canvas):
         
         root.update()
         
+        
+        
+        self.level=1
+        
+        
         self.menu() 
         
         
         
         
     def menu(self):
-		self.level=1
 		Menu(self)
 
 
@@ -79,16 +83,22 @@ class Background(ImageTk.PhotoImage):
         canvas.tag_lower(self)
 		
 class Menu(GameObject):
-	def __init__(self,canvas):
-            x,y = canvas.width/2,canvas.height/2
-            GameObject.__init__(self,canvas,x,y,'c')
-            Button(canvas,x,y-50,"Play")
+	def __init__(self,game):
+            self.game=game
+            game.difficulty=1
+            x,y = game.width/2,game.height/2
+            GameObject.__init__(self,game,x,y,'c')
+            button=Button(game,x,y-50,"Play",callback=self.playClicked)
+        
+        def playClicked(self, event):
+            self.game.initGame()
         
 class Button(GameObject):
-    def __init__(self,canvas,x,y,text):
-        GameObject.__init__(self,canvas,x,y,'c')
-        canvas.create_text(x,y,text=text,anchor='c',fill='white')
-        
+    def __init__(self,canvas,x,y,text,callback):
+        GameObject.__init__(self,canvas,x,y,'c',callback)
+        self.textId=canvas.create_text(x,y,text=text,anchor='c',fill='white')
+        self.canvas.tag_bind(self.textId,'<Button-1>',callback)
+
 class StoryTeller(GameObject):
 	def __init__(self,canvas):
 		x,y = canvas.width/2,canvas.height/2

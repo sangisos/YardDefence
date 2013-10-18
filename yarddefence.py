@@ -64,11 +64,11 @@ class GameWindow(Canvas):
             lifeList.append(heroLife.HeroLife(self,lifePositionX))
             lifePositionX = lifePositionX + 30
             
-            self.activeEnemies=[]
-            self.deadEnemies=[]
-            self.storyteller=StoryTeller(self)
-            self.after(0,self.doOneFrame)
-            self.after(0,self.createEnemy)
+        self.activeEnemies=[]
+        self.deadEnemies=[]
+        self.storyteller=StoryTeller(self)
+        self.after(0,self.doOneFrame)
+        self.after(0,self.createEnemy)
             
     def createEnemy(self):
         enemy=enemy2(self)

@@ -45,7 +45,7 @@ class GameObject:
         
     
     def getHeight(self):
-        # Om man inte vill att något visst ska "hoppa" vid animering.
+        # Om man inte vill att något visst ska "hoppa" vid animering:
         #return self.__class__.images[0].height()
         bbox=self.canvas.bbox(self.objectId)
         return bbox[3]-bbox[1]

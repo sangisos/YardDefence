@@ -42,12 +42,11 @@ class GameWindow(Canvas):
         self.menuObject=Menu(self,[("Play",self.difficultyMenu),("Exit",self.exit)])
     
     def difficultyMenu(self,event=None):
-        self.menuObject=Menu(self,[("Easy",self.setDifficulty),("Medium",self.setDifficulty),("Hard",self.setDifficulty),('Back',self.startMenu)])
+        self.menuObject=Menu(self,[("Easy",self.startWithDifficultyCallback),("Medium",self.startWithDifficultyCallback),("Hard",self.startWithDifficultyCallback),('Back',self.startMenu)])
         
-    def setDifficulty(self,difficulty):
-        if isinstance(difficulty, Event):
-            difficulty=2
-        self.difficulty=difficulty
+    def startWithDifficultyCallback(self,event):
+        buttonNumber = self.menuObject.getButtonNumber(event)
+        self.difficulty = buttonNumber + 1
         self.initGame()
         
     def exit(self,event=None):
@@ -91,28 +90,27 @@ class GameWindow(Canvas):
 
 class Enemy(GameObject):
     '''Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
-    def __init__(self,canvas):
+    def __init__(self,game):
         
-        GameObject.__init__(self,canvas,canvas.width-50,randint(100,canvas.height-100))
+        GameObject.__init__(self,game,game.width-50,randint(100,game.height-100))
     def delete(self):
-        self.canvas.deleteEnemy(self)
+        self.game.deleteEnemy(self)
         
 class enemy2(Enemy):
     '''en fiende'''
 
 class Background(ImageTk.PhotoImage):
-    def __init__(self, canvas):
-        self.canvas=canvas
-        filename = "images/background" + str(canvas.level) + ".gif"
+    def __init__(self, game):
+        self.game=game
+        filename = "images/background" + str(game.level) + ".gif"
         image = Image.open(filename)
-        rezisedImageObj = image.resize((canvas.width, canvas.height), Image.ANTIALIAS)
+        rezisedImageObj = image.resize((game.width, game.height), Image.ANTIALIAS)
         ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
-        self.imageID = canvas.create_image(0,0,anchor="nw",image=self)
-        canvas.tag_lower(self)
+        self.imageID = game.create_image(0,0,anchor="nw",image=self)
+        game.tag_lower(self)
 
 class Menu(GameObject):
     def __init__(self,game,buttonTextCallbackTuples,back=None):
-        self.game=game
         x,y = game.width/2,game.height/2
         GameObject.__init__(self,game,x,y,'c')
         
@@ -123,7 +121,12 @@ class Menu(GameObject):
         ydeltas=range(-ydiff,ydiff,yjump)
         # Have to save one (and only one) ref to buttons, otherwise garbagecollected by python, if more than one, object will not be deleted
         self.buttons=[Button(game,x,y+ydelta,buttonText,callback=buttonCallback) for (buttonText,buttonCallback),ydelta in zip(buttonTextCallbackTuples,ydeltas)]
-        
+    def getButtonNumber(self,event):
+        # HERE BE DRAGONS
+        current = self.game.find_withtag(CURRENT)
+        button = [self.buttons.index(button) for button in self.buttons if current[0] in [button.objectId, button.textObject.objectId]]
+        return button[0]
+
 class Button(GameObject):
     def __init__(self,game,x,y,text,callback):
         GameObject.__init__(self,game,x,y,'c',callback)
@@ -134,19 +137,19 @@ class Text(GameObject):
         GameObject.__init__(self,game,x,y,'c',callback,text,color)
 
 class StoryTeller(GameObject):
-	def __init__(self,canvas):
-		x,y = canvas.width/2,canvas.height/2
-		GameObject.__init__(self,canvas,x,y,'c')
-		canvas.create_text(x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nThey are freakin' CrAaaAaazzZyy!! \n\nRegards,\nLennart",anchor='c',fill='black',font=canvas.font)
+	def __init__(self,game):
+		x,y = game.width/2,game.height/2
+		GameObject.__init__(self,game,x,y,'c')
+		game.create_text(x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nThey are freakin' CrAaaAaazzZyy!! \n\nRegards,\nLennart",anchor='c',fill='black',font=game.font)
 
 class CurrentScore():
-	def __init__(self,canvas):
+	def __init__(self,game):
 		currentScore = 0
-		canvas.create_text(50,50,text="Score: " + str(currentScore),anchor='c')
+		game.create_text(50,50,text="Score: " + str(currentScore),anchor='c')
 		
 class Hero(GameObject):
-	def __init__(self,canvas):
-		GameObject.__init__(self,canvas,110,canvas.height/2.5,'c')
+	def __init__(self,game):
+		GameObject.__init__(self,game,110,game.height/2.5,'c')
 
 def main():
     game=GameWindow()

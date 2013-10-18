@@ -28,24 +28,24 @@ class GameObject:
     '''
     __metaclass__=MetaGameObject
     
-    def __init__(self,canvas,x,y,anchor='nw',callback=None,text=None,color='black'):
-        self.canvas=canvas
+    def __init__(self,game,x,y,anchor='nw',callback=None,text=None,color='black'):
+        self.game=game
         if text:
-            self.objectId = self.canvas.create_text(x,y,anchor=anchor,text=text,fill=color)
+            self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color)
         else:
-            self.objectId = self.canvas.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
+            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
         if callback:
-            self.canvas.tag_bind(self.objectId,'<Button-1>',callback)
+            self.game.tag_bind(self.objectId,'<Button-1>',callback)
     
     def __del__(self):
-        self.canvas.tag_unbind('<Button-1>',self.objectId)
-        self.canvas.delete(self.objectId)
+        self.game.tag_unbind('<Button-1>',self.objectId)
+        self.game.delete(self.objectId)
         del self.objectId
-        del self.canvas
+        del self.game
         
     
     def getHeight(self):
         # Om man inte vill att något visst ska "hoppa" vid animering:
         #return self.__class__.images[0].height()
-        bbox=self.canvas.bbox(self.objectId)
+        bbox=self.game.bbox(self.objectId)
         return bbox[3]-bbox[1]

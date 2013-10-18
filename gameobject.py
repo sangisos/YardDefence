@@ -28,13 +28,24 @@ class GameObject:
     '''
     __metaclass__=MetaGameObject
     
-    '''The base mouse callback method bound to <Button-1>. Overwrite to implement your own callback, use Tkinter.CURRENT as tag/id for object currently under mouse pointer'''
-        
-    def __init__(self,canvas,x,y,anchor='nw',callback=None,text=None):
+    def __init__(self,canvas,x,y,anchor='nw',callback=None,text=None,color='black'):
         self.canvas=canvas
         if text:
-            self.objectId = self.canvas.create_text(x,y,anchor=anchor,image=self.__class__.images[0])
+            self.objectId = self.canvas.create_text(x,y,anchor=anchor,text=text,fill=color)
         else:
             self.objectId = self.canvas.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
         if callback:
             self.canvas.tag_bind(self.objectId,'<Button-1>',callback)
+    
+    def __del__(self):
+        self.canvas.tag_unbind('<Button-1>',self.objectId)
+        self.canvas.delete(self.objectId)
+        del self.objectId
+        del self.canvas
+        
+    
+    def getHeight(self):
+        # Om man inte vill att något visst ska "hoppa" vid animering.
+        #return self.__class__.images[0].height()
+        bbox=self.canvas.bbox(self.objectId)
+        return bbox[3]-bbox[1]

@@ -20,6 +20,7 @@ class GameWindow(Canvas):
         self.level=0
         self.difficulty=1
         self.menuObject=None
+        self.gamePaused=False
         
         
         root.bind('<Escape>',self.confirmExit)
@@ -45,14 +46,15 @@ class GameWindow(Canvas):
     def confirmExit(self,event=None):
         self.pauseGame()
         self.menuObject=Menu(self,[('Yes', self.exit), ('No', self.continueGame)])
+        
     def exit(self,event=None):
         self.quit()
         
     def pauseGame(self,event=None):
-        pass
+        self.gamePaused=True
     
     def continueGame(self,event=None):
-        pass
+        self.gamePaused=False
     
     def initGame(self):
         del self.menuObject

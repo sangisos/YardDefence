@@ -23,7 +23,6 @@ class GameWindow(Canvas):
         self.height = root.winfo_screenheight()
         Canvas.__init__(self, root, width=self.width, height=self.height,bg="#009900")
         self.pack()
-        
         root.update()
         
         
@@ -32,13 +31,16 @@ class GameWindow(Canvas):
         self.difficulty=1
         self.menuObject=None
         
+        
+        root.bind('<Escape>',self.confirmExit)
+        
         self.startMenu()
         
         
         
         
     def startMenu(self,event=None):
-        self.menuObject=Menu(self,[("Play",self.difficultyMenu),("Exit",self.exit)])
+        self.menuObject=Menu(self,[("Play",self.difficultyMenu),("Exit",self.confirmExit)])
     
     def difficultyMenu(self,event=None):
         self.menuObject=Menu(self,[("Easy",self.startWithDifficultyCallback),("Medium",self.startWithDifficultyCallback),("Hard",self.startWithDifficultyCallback),('Back',self.startMenu)])
@@ -48,9 +50,14 @@ class GameWindow(Canvas):
         self.difficulty = buttonNumber + 1
         self.initGame()
         
+    def confirmExit(self,event=None):
+        self.menuObject=Menu(self,[('Ja', self.exit), ('Nej', self.continueGame)])
     def exit(self,event=None):
-        root.quit()
-
+        self.quit()
+        
+    def continueGame(self,event=None):
+        pass
+    
     def initGame(self):
         del self.menuObject
         self.background=Background(self)
@@ -109,7 +116,7 @@ class Background(ImageTk.PhotoImage):
         game.tag_lower(self)
 
 class Menu(GameObject):
-    def __init__(self,game,buttonTextCallbackTuples,back=None):
+    def __init__(self,game,buttonTextCallbackTuples,title=None):
         x,y = game.width/2,game.height/2
         GameObject.__init__(self,game,x,y,'c')
         

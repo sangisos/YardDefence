@@ -26,7 +26,7 @@ class Enemy(GameObject):
     
     def walk(self):
         self.game.after(100/self.speed,self.walk)
-        print str(self) + " walking"
+        self.move(-1,0)
     
 class Boss(Enemy):
     '''Boss base class'''

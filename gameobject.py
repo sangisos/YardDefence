@@ -45,6 +45,13 @@ class GameObject:
         del self.objectId
         del self.game
         
+        
+    def move(self,dx,dy):
+        self.game.move(self.objectId,dx,dy)
+        
+    #def nextPicture(self):
+        #self.objectId=
+        
     @classmethod
     def getHeight(cls):
         return cls.images[0].height()

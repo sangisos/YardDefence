@@ -64,6 +64,7 @@ class GameWindow(Canvas):
         lifeList = []
         lifePositionX = self.width/2.5
         for x in range(3):
+            print "hejjjjjj"
             lifeList.append(heroLife.HeroLife(self,lifePositionX))
             lifePositionX = lifePositionX + 30
             

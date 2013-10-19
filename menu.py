@@ -13,14 +13,11 @@ class Menu(GameObject):
             
         # Place buttons
         buttonHeight=Button.getHeight()
-        print buttonHeight
         noOfButtons=len(buttonTextCallbackTuples)
-        print len(buttonTextCallbackTuples)
         buttonAreaHeight=buttonHeight*noOfButtons*1.1
         ydiff=int(buttonAreaHeight/2)
         yjump=int(buttonAreaHeight/(len(buttonTextCallbackTuples)))
         ydeltas=range(-ydiff,ydiff,yjump-1)
-        print ydeltas
         
         
         

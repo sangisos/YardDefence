@@ -4,16 +4,31 @@ from button import *
 
 class Menu(GameObject):
     def __init__(self,game,buttonTextCallbackTuples,title=None):
-        x,y = game.width/2,game.height/2
+        x,y=game.centerx,game.centery
         GameObject.__init__(self,game,x,y,'c')
-        
+        height=self.getHeight()
+        if title:
+            self.title=Text(self,x,y-height/3,text=title)
+            y = y + self.title.getHeight()/2
+            
         # Place buttons
-        heightForButtonPlacement=self.getHeight()/2 
-        ydiff=heightForButtonPlacement/2
-        yjump=heightForButtonPlacement/len(buttonTextCallbackTuples)
-        ydeltas=range(-ydiff,ydiff,yjump)
+        buttonHeight=Button.getHeight()
+        print buttonHeight
+        noOfButtons=len(buttonTextCallbackTuples)
+        print len(buttonTextCallbackTuples)
+        buttonAreaHeight=buttonHeight*noOfButtons*1.1
+        ydiff=int(buttonAreaHeight/2)
+        yjump=int(buttonAreaHeight/(len(buttonTextCallbackTuples)))
+        ydeltas=range(-ydiff,ydiff,yjump-1)
+        print ydeltas
+        
+        
+        
         # Have to save one (and only one) ref to buttons, otherwise garbagecollected by python, if more than one, object will not be deleted
         self.buttons=[Button(game,x,y+ydelta,buttonText,callback=buttonCallback) for (buttonText,buttonCallback),ydelta in zip(buttonTextCallbackTuples,ydeltas)]
+        
+        
+        
     def getButtonNumber(self,event):
         # HERE BE DRAGONS
         current = self.game.find_withtag(CURRENT)

@@ -1,5 +1,5 @@
 from gameobject import *
 
 class HeroLife(GameObject):
-	def __init__(self,canvas,x):
-		GameObject.__init__(self,canvas,x,32,'c')
+	def __init__(self,game,x):
+		GameObject.__init__(self,game,x,32)

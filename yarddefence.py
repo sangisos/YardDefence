@@ -44,7 +44,7 @@ class GameWindow(Canvas):
         
     def confirmExit(self,event=None):
         self.pauseGame()
-        self.menuObject=Menu(self,[('Ja', self.exit), ('Nej', self.continueGame)])
+        self.menuObject=Menu(self,[('Yes', self.exit), ('No', self.continueGame)])
     def exit(self,event=None):
         self.quit()
         
@@ -60,10 +60,10 @@ class GameWindow(Canvas):
         Hero(self)
         CurrentScore(self)
         
-        lifeList = []
+        self.lifeList = []
         lifePositionX = self.width/2.5
         for x in range(3):
-            lifeList.append(herolife.HeroLife(self,lifePositionX))
+            self.lifeList.append(HeroLife(self,lifePositionX))
             lifePositionX = lifePositionX + 30
             
         self.activeEnemies=[]

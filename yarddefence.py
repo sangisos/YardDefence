@@ -51,7 +51,7 @@ class GameWindow(Canvas):
         
     def confirmExit(self,event=None):
         self.pauseGame()
-        self.menuObject=Menu(self,[('Yes', self.exit), ('No', self.continueGame)])
+        self.menuObject=Menu(self,[('Yes', self.exit), ('No', self.continueGame)],title="Exit game?")
         
     def exit(self,event=None):
         self.quit()

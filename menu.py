@@ -8,8 +8,8 @@ class Menu(GameObject):
         GameObject.__init__(self,game,x,y,'c')
         height=self.getHeight()
         if title:
-            self.title=Text(self,x,y-height/3,text=title)
-            y = y + self.title.getHeight()/2
+            self.title=Text(game,x,y-height/3,text=title,color='white')
+            y = y + self.title.getbboxHeight()/2
             
         # Place buttons
         buttonHeight=Button.getHeight()

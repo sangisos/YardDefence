@@ -19,16 +19,20 @@ class _MetaGameObject(type):
 class GameObject:
     '''All object that show pictures on screen should inherit the GameObjectclass, they have to have a folder in the image folder namned <classname>.
     
+    Make sure to always keep a reference to the object as long as it should be 'alive', otherwise the evil good natured Garbage Collector will come and eat your object!
+    
     Use text=<text> to create a text object.
     
     Use callback=<callback> for mouse callback method bound to <Button-1>. Use Tkinter.CURRENT as tag/id for object currently under mouse pointer.
     '''
     __metaclass__=_MetaGameObject
     
-    def __init__(self,game,x,y,anchor='nw',callback=None,text=None,color='black',imageNumber=0):
+    def __init__(self,game,x,y,anchor='nw',callback=None,text=None,color='black',imageNumber=0,font=None):
         self.game=game
         if text:
-            self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color)
+            if font is None:
+                font=game.font
+            self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color,font=font)
         else:
             self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.__class__.images[imageNumber])
         if callback:

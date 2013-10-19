@@ -11,12 +11,18 @@ class GameWindow(Canvas):
         
         self.width = root.winfo_screenwidth()
         self.height = root.winfo_screenheight()
+        self.centerx = self.width/2
+        self.centery = self.height/2
+        
         Canvas.__init__(self, root, width=self.width, height=self.height,bg="#009900")
+        
         self.pack()
         root.update()
         
+        # Standard font, används i gameobject om inget anges
+        self.font=('Helvetica 12 normal')
+        self.storyFont=('Helvetica 11 bold')
         
-        self.font=('Helvetica 11 bold')
         self.level=0
         self.difficulty=1
         self.menuObject=None
@@ -95,7 +101,7 @@ class StoryTeller(GameObject):
 	def __init__(self,game):
 		x,y = game.width/2,game.height/2
 		GameObject.__init__(self,game,x,y,'c')
-		game.create_text(x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",anchor='c',fill='black',font=game.font)
+		game.create_text(x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",anchor='c',fill='black',font=game.storyFont)
 
 class CurrentScore():
 	def __init__(self,game):

@@ -31,7 +31,6 @@ class GameWindow(Canvas):
         self.level=1
         self.difficulty=1
         self.menuObject=None
-        self.menuBack=None
         
         self.startMenu()
         
@@ -125,7 +124,7 @@ class Menu(GameObject):
         # HERE BE DRAGONS
         current = self.game.find_withtag(CURRENT)
         button = [self.buttons.index(button) for button in self.buttons if current[0] in [button.objectId, button.textObject.objectId]]
-        return button[0]
+        return button[0] # Could fail if no object is found above, but the callback that triggers this method should only be called if the button or it's text is the 'current' object.
 
 class Button(GameObject):
     def __init__(self,game,x,y,text,callback):

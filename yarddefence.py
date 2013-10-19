@@ -114,7 +114,7 @@ class StoryTeller(GameObject):
 class CurrentScore():
 	def __init__(self,game):
 		currentScore = 0
-		game.create_text(50,50,text="Score: " + str(currentScore),anchor='c')
+		game.create_text(game.width/2,40,text="Score: " + str(currentScore),anchor='c',fill='black',font=(game.font,20,"bold"))
 
 def main():
     game=GameWindow()

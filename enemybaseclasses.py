@@ -18,13 +18,7 @@ class Boss(Enemy):
 def getEnemiesByLevel(self,level):
 	if(level==1):
 		return ["enemy2","enemy3","enemy4"]
-	if(level==1.5):
-		return ["boss1"]
 	elif(level==2):
 		return ["enemy5","enemy6","enemy7"]
-	if(level==2.5):
-		return ["boss2"]
 	elif(level==3):
 		return ["enemy8","enemy9","enemy10"]
-	if(level==3.5):
-		return ["boss3"]

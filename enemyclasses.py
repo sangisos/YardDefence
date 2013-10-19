@@ -1,3 +1,4 @@
+# encoding: utf-8
 from enemybaseclasses import *
 
 # Normal enemies inherits the Enemy class

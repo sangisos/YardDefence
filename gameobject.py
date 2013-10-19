@@ -3,7 +3,7 @@ from tkstart import *
 
 class _MetaGameObject(type):
     def __new__(mcs, classname, bases, dictionary):
-        if not classname in ["GameObject","Enemy","Text"]:
+        if not classname in ["GameObject","Enemy","Boss","Text"]:
             imageDir=os.curdir + os.sep + "images" + os.sep + str(classname).lower()
             filenames=[os.path.join(imageDir, f) for f in os.listdir(imageDir) if f.endswith(".gif")]
             filenames.sort()

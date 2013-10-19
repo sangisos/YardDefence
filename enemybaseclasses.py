@@ -1,3 +1,5 @@
+# encoding: utf-8
+from gameobject import *
 
 class Enemy(GameObject):
     '''Enemy base class

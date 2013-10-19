@@ -13,3 +13,12 @@ class Enemy(GameObject):
         
 class Boss(Enemy):
     '''Boss base class'''
+	
+	
+def getEnemiesByLevel(self,level):
+	if(level==1):
+		return ["enemy2","enemy3","enemy4"]
+	elif(level==2):
+		return ["enemy5","enemy6","enemy7"]
+	elif(level==3):
+		return ["enemy8","enemy9","enemy10"]

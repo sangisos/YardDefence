@@ -57,7 +57,7 @@ class GameWindow(Canvas):
     def initGame(self):
         del self.menuObject
         self.background=Background(self)
-        Hero(self)
+        self.hero=Hero(self)
         CurrentScore(self)
         
         self.lifeList = []

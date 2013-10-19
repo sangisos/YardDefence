@@ -73,10 +73,10 @@ class GameWindow(Canvas):
         self.after(0,self.createEnemy)
             
     def createEnemy(self):
-        enemy=enemy2(self)
+        enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
         self.activeEnemies.append(enemy)
         self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
-        self.after(2000,enemy.delete)
+        self.after(20000,enemy.delete)
         
     def deleteEnemy(self,enemy):
         self.activeEnemies.remove(enemy)
@@ -85,6 +85,7 @@ class GameWindow(Canvas):
         # Commented for debug. Uncomment to loop: 
         self.after(30,self.doOneFrame)
         ### Skriv kod efter här för att visa en frame
+        #self.activeEnemies[0].walk(self,1)
         
         root.update()
         

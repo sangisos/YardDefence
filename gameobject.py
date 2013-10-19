@@ -1,13 +1,7 @@
 # encoding: utf-8
-try:  # import as appropriate for 2.x vs. 3.x
-    from tkinter import Canvas,CURRENT
-except:
-    from Tkinter import Canvas,CURRENT
-from PIL import Image,ImageTk
-import os
-from random import randint
+from tkstart import *
 
-class MetaGameObject(type):
+class _MetaGameObject(type):
     def __new__(mcs, classname, bases, dictionary):
         if not classname in ["GameObject","Enemy","Text"]:
             imageDir=os.curdir + os.sep + "images" + os.sep + str(classname).lower()
@@ -15,7 +9,10 @@ class MetaGameObject(type):
             filenames.sort()
             if "Enemy" in bases:
                 dictionary["eliminatedImage"]=ImageTk.PhotoImage(image=Image.open(filenames.pop()))
-            dictionary["images"] = [ImageTk.PhotoImage(image=Image.open(filename)) for filename in filenames]
+            imgs=[Image.open(filename) for filename in filenames]
+            if classname is "Background":
+                imgs=[img.resize((root.winfo_screenwidth(), root.winfo_screenheight()), Image.ANTIALIAS) for img in imgs]
+            dictionary["images"] = [ImageTk.PhotoImage(image=img) for img in imgs]
             
         return type.__new__(mcs, classname, bases, dictionary)
 
@@ -26,15 +23,16 @@ class GameObject:
     
     Use callback=<callback> for mouse callback method bound to <Button-1>. Use Tkinter.CURRENT as tag/id for object currently under mouse pointer.
     '''
-    __metaclass__=MetaGameObject
+    __metaclass__=_MetaGameObject
     
-    def __init__(self,game,x,y,anchor='nw',callback=None,text=None,color='black'):
+    def __init__(self,game,x,y,anchor='nw',callback=None,text=None,color='black',imageNumber=0):
         self.game=game
         if text:
             self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color)
         else:
-            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.__class__.images[0])
+            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.__class__.images[imageNumber])
         if callback:
+            self.callback=callback
             self.game.tag_bind(self.objectId,'<Button-1>',callback)
     
     def __del__(self):

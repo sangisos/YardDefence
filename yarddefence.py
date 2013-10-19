@@ -1,13 +1,5 @@
 # encoding: utf-8
-try:  # import as appropriate for 2.x vs. 3.x
-    from tkinter import Tk,Canvas,Event,CURRENT
-except:
-    from Tkinter import Tk,Canvas,Event,CURRENT
-root=Tk()
-from PIL import Image,ImageTk
-import os
-import time
-from random import randint
+from tkstart import *
 from gameobject import GameObject
 import heroLife
 
@@ -27,7 +19,7 @@ class GameWindow(Canvas):
         
         
         self.font=('Helvetica 11 bold')
-        self.level=1
+        self.level=0
         self.difficulty=1
         self.menuObject=None
         
@@ -40,6 +32,7 @@ class GameWindow(Canvas):
         
         
     def startMenu(self,event=None):
+        self.background=Background(self)
         self.menuObject=Menu(self,[("Play",self.difficultyMenu),("Exit",self.confirmExit)])
     
     def difficultyMenu(self,event=None):
@@ -48,13 +41,18 @@ class GameWindow(Canvas):
     def startWithDifficultyCallback(self,event):
         buttonNumber = self.menuObject.getButtonNumber(event)
         self.difficulty = buttonNumber + 1
+        self.level=1
         self.initGame()
         
     def confirmExit(self,event=None):
+        self.pauseGame()
         self.menuObject=Menu(self,[('Ja', self.exit), ('Nej', self.continueGame)])
     def exit(self,event=None):
         self.quit()
         
+    def pauseGame(self,event=None):
+        pass
+    
     def continueGame(self,event=None):
         pass
     
@@ -105,15 +103,10 @@ class Enemy(GameObject):
 class enemy2(Enemy):
     '''en fiende'''
 
-class Background(ImageTk.PhotoImage):
+class Background(GameObject):
     def __init__(self, game):
-        self.game=game
-        filename = "images/background" + str(game.level) + ".gif"
-        image = Image.open(filename)
-        rezisedImageObj = image.resize((game.width, game.height), Image.ANTIALIAS)
-        ImageTk.PhotoImage.__init__(self,image=rezisedImageObj)
-        self.imageID = game.create_image(0,0,anchor="nw",image=self)
-        game.tag_lower(self)
+        GameObject.__init__(self,game,0,0,imageNumber=game.level)
+        game.tag_lower(self.objectId)
 
 class Menu(GameObject):
     def __init__(self,game,buttonTextCallbackTuples,title=None):

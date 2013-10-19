@@ -7,3 +7,4 @@ from button import *
 from menu import *
 from hero import *
 from enemybaseclasses import *
+from enemyclasses import *

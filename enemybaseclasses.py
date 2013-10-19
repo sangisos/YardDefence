@@ -6,7 +6,7 @@ class Enemy(GameObject):
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=3
+    speed=5
     hp=1
     
     
@@ -25,7 +25,7 @@ class Enemy(GameObject):
         pass
     
     def walk(self):
-        self.game.after(100/self.speed,self.walk)
+        self.game.after(int(100/self.speed),self.walk)
         self.move(-1,0)
     
 class Boss(Enemy):

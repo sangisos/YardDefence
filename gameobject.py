@@ -34,7 +34,7 @@ class GameObject:
                 font=game.font
             self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color,font=font)
         else:
-            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.__class__.images[imageNumber])
+            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.getImage(imageNumber))
         if callback:
             self.callback=callback
             self.game.tag_bind(self.objectId,'<Button-1>',callback)
@@ -52,6 +52,10 @@ class GameObject:
     #def nextPicture(self):
         #self.objectId=
         
+    @classmethod
+    def getImage(cls,number):
+        return cls.images[number]
+    
     @classmethod
     def getHeight(cls):
         return cls.images[0].height()

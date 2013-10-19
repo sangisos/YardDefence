@@ -1,5 +1,4 @@
-from PIL import ImageTk, Image
-from gameobject import GameObject
+from gameobject import *
 
 class HeroLife(GameObject):
 	def __init__(self,canvas,x):

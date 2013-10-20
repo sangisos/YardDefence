@@ -27,7 +27,8 @@ class Enemy(GameObject):
         
         self.callback=self.enemyOnClick
         try:
-            self.game.tag_bind(self.tag,'<Button-1>',self.callback)
+            for objId in self.objectIds:
+                self.game.tag_bind(objId,'<Button-1>',self.callback)
         except Exception, e:
             print e
         print "kolla så att dessa tre rader stämmer överrens:"
@@ -36,10 +37,9 @@ class Enemy(GameObject):
         print self.tag
         print self.game.gettags(self.objectId)[0]
         print "----------------------------------------------"
-        self.eliminated = False
         
-        game.after(1,self.walk)
-        game.after(1,self.animate)
+        game.after(10,self.walk)
+        game.after(10,self.animate)
         
     def __del__(self):
         print "enemy deleted"

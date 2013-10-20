@@ -88,9 +88,21 @@ class GameWindow(Canvas):
         self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
         self.after(5000,enemy.delete)
         
-    def deleteEnemy(self,enemy):
+    def killEnemy(self,enemy):
         self.activeEnemies.remove(enemy)
+        self.deadEnemies.append(enemy)
         
+    def deleteEnemy(self,enemy):
+        print "trying to delete enemy: " + str(enemy) + " from active"
+        try:
+            self.activeEnemies.remove(enemy)
+        except:
+            print "trying to delete enemy: " + str(enemy) + " from dead"
+            try:
+                self.deadEnemies.remove(enemy)
+            except:
+                print str(enemy) + " nowhere to be found!"
+                
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
         self.after(30,self.doOneFrame)

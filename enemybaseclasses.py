@@ -6,7 +6,7 @@ class Enemy(GameObject):
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=4
+    speed=8
     hp=1
     eliminated = False
     
@@ -18,10 +18,10 @@ class Enemy(GameObject):
         x,y=game.width-50,randint(100,game.height-100)
         
         self.tag=hash(self)
+        self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()]
+        self.objectIdsCycle = itertools.cycle(self.objectIds)
         
-        self.objectIds = itertools.cycle([self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()])
-        
-        self.objectId=next(self.objectIds)
+        self.objectId=next(self.objectIdsCycle)
         self.game.itemconfig(self.tag,state='normal')
         
         self.callback=self.enemyOnClick
@@ -31,16 +31,32 @@ class Enemy(GameObject):
         game.after(1,self.animate)
         
     
-        
     def delete(self):
+        
         self.game.deleteEnemy(self)
-        self.game.tag_unbind(self.tag,'<Button-1>')
-        self.eliminated=True
+        if not self.eliminated:
+            self.eliminated=True
+            self.game.tag_unbind(self.tag,'<Button-1>')
+            del self.objectIdsCycle
+            del self.objectIds
+            
         self.game.delete(self.tag)
-        del self.objectIds
-        del self.tag
-        del self
+        self.game.delete(self.objectId)
+        
         #self.__del__()
+    
+            
+    def eliminate(self):
+        x,y = self.game.coords(self.tag)
+        self.eliminated=True
+        self.game.killEnemy(self)
+        self.game.tag_unbind(self.tag,'<Button-1>')
+        self.game.delete(self.tag)
+        del self.objectIdsCycle
+        del self.objectIds
+        self.objectId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,tags=("Dead"))
+        
+        #root.game.update_idletasks()
         
     @classmethod
     def getImages(cls):
@@ -62,7 +78,7 @@ class Enemy(GameObject):
             self.game.resumeQueue.append(self.walk)
         elif not self.eliminated:
             self.game.after(int(100/self.speed),self.walk)
-            self.move(-2,0)
+            self.move(-1,0)
         
     def animate(self):
         if self.game.gamePaused:
@@ -70,16 +86,10 @@ class Enemy(GameObject):
         elif not self.eliminated:
             self.game.after(100,self.animate)
             self.nextPicture()
-            
-    def eliminate(self):
-        coord = self.game.coords(self.tag)
-        self.delete()
-        #root.game.update_idletasks()
-        
         
     def nextPicture(self):
         self.game.itemconfig(self.objectId,state='hidden')
-        self.objectId = next(self.objectIds)
+        self.objectId = next(self.objectIdsCycle)
         self.game.itemconfig(self.objectId,state='normal')
 			
     def enemyOnClick(self,event):

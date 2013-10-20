@@ -88,12 +88,15 @@ class Enemy(GameObject):
         self.game.move(self.tag,dx,dy)
         
     def animate(self):
-        if self.game.gamePaused:
-            self.game.resumeQueue.append(self.animate)
-        elif not self.eliminated:
-            if self.positionOfTailX>0:
-                self.game.after(100,self.animate)
-            self.nextPicture()
+        try:
+            if self.game.gamePaused:
+                self.game.resumeQueue.append(self.animate)
+            elif not self.eliminated:
+                if self.positionOfTailX>0:
+                    self.game.after(100,self.animate)
+                    self.nextPicture()
+        except:
+            print "fel i animate"
         
     def walk(self):
         if self.game.gamePaused:

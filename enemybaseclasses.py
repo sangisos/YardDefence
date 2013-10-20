@@ -37,23 +37,24 @@ class Enemy(GameObject):
         print "enemy deleted"
         
     def delete(self):
-        
-        self.game.deleteEnemy(self)
-        if not self.eliminated:
-            self.eliminated=True
-            self.game.tag_unbind(self.tag,'<Button-1>')
-            del self.objectIdsCycle
-            del self.objectIds
+        try:
+            self.game.deleteEnemy(self)
+            if not self.eliminated:
+                self.eliminated=True
+                self.game.tag_unbind(self.tag,'<Button-1>')
+                del self.objectIdsCycle
+                del self.objectIds
             
-        self.game.delete(self.tag)
-        self.game.delete(self.objectId)
-        del self.animate
-        del self.callback
-        del self.walk
-        del self.tag
-        del self.hp
-        del self.objectId
-        del self.eliminated
+            self.game.delete(self.tag)
+            self.game.delete(self.objectId)
+            del self.callback
+            del self.walk
+            del self.tag
+            del self.hp
+            del self.objectId
+            del self.eliminated
+        except:
+            print "fel i eliminate"
         #self.__del__()
     
             
@@ -61,8 +62,11 @@ class Enemy(GameObject):
         x,y = self.game.coords(self.tag)
         self.eliminated=True
         self.game.killEnemy(self)
-        self.game.tag_unbind(self.tag,'<Button-1>')
-        self.game.delete(self.tag)
+        try:
+            self.game.tag_unbind(self.tag,'<Button-1>')
+            self.game.delete(self.tag)
+        except:
+            print "fel i eliminate"
         del self.objectIdsCycle
         del self.objectIds
         self.objectId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,tags=("Dead"))
@@ -83,6 +87,14 @@ class Enemy(GameObject):
     def move(self,dx,dy):
         self.game.move(self.tag,dx,dy)
         
+    def animate(self):
+        if self.game.gamePaused:
+            self.game.resumeQueue.append(self.animate)
+        elif not self.eliminated:
+            if self.positionOfTailX>0:
+                self.game.after(100,self.animate)
+            self.nextPicture()
+        
     def walk(self):
         if self.game.gamePaused:
             self.game.resumeQueue.append(self.walk)
@@ -93,14 +105,6 @@ class Enemy(GameObject):
                 self.positionOfTailX=self.positionOfTailX+self.movePixels
             else:
                 self.delete()
-        
-    def animate(self):
-        if self.game.gamePaused:
-            self.game.resumeQueue.append(self.animate)
-        elif not self.eliminated:
-            if self.positionOfTailX>0:
-                self.game.after(100,self.animate)
-            self.nextPicture()
         
     def nextPicture(self):
         self.game.itemconfig(self.objectId,state='hidden')

@@ -13,7 +13,7 @@ class Enemy(GameObject):
     
     def __init__(self,game):
         self.game=game
-        callback=None
+        callback=self.enemyOnClick
         x,y=game.width-50,randint(100,game.height-100)
         #GameObject.__init__(self,game,x,y)
         self.tag=hash(self)
@@ -24,7 +24,6 @@ class Enemy(GameObject):
         
         game.after(1,self.walk)
         game.after(1,self.animate)
-        GameObject.__init__(self,game,game.width-50,randint(100,game.height-100),callback=self.enemyOnClick)
         
     
     def __del__(self):

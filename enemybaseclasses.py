@@ -86,7 +86,8 @@ class Enemy(GameObject):
     
     def move(self,dx,dy):
         print "enemybaseclasses.move("+str(self)+","+str(dx)+","+str(dy)+")"
-        self.game.move(self.tag,dx,dy)
+        for objId in self.objectIds:
+            self.game.move(objId,dx,dy)
         
     def animate(self):
         try:

@@ -48,9 +48,6 @@ class GameObject:
         del self.objectId
         del self.game
         
-    #def nextPicture(self):
-        #self.objectId=
-        
     @classmethod
     def getImage(cls,number):
         return cls.images[number]
@@ -60,8 +57,7 @@ class GameObject:
         return cls.images[0].height()
     
     def getbboxHeight(self):
-        # Om man inte vill att något visst ska "hoppa" vid animering:
-        # använd "return self.__class__.images[0].height()" (den andra funktionen)
+        '''Om man inte vill att något visst ska "hoppa" vid animering, använd "return self.__class__.images[0].height()" (getHeight()), den tar bara höjden av första bilden. Den kan även användas utan att man har ett objekt av klassen'''
         bbox=self.game.bbox(self.objectId)
         return bbox[3]-bbox[1]
         

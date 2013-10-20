@@ -34,6 +34,7 @@ class Enemy(GameObject):
     def enemyOnClick(self,event):
         #del self
 		print "jdksdkj"
+		self.game.itemconfig(self.game.currentScore.scoreText,text="hej")
 		#self.game.currentScore = self.game.currentScore + 1
 		#print self.game.currentScore
     

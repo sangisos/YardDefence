@@ -18,7 +18,8 @@ class Enemy(GameObject):
         
         x,y=game.width-50,randint(100,game.height-100)
         
-        self.tag=str(hash(self))
+        self.tag="enemy"+str(hash(self))
+        
         self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()]
         self.objectIdsCycle = itertools.cycle(self.objectIds)
         

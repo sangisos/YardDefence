@@ -26,8 +26,10 @@ class Enemy(GameObject):
         self.game.itemconfig(self.tag,state='normal')
         
         self.callback=self.enemyOnClick
-        self.game.tag_bind(self.tag,'<Button-1>',self.callback)
-        
+        try:
+            self.game.tag_bind(self.tag,'<Button-1>',self.callback)
+        except Exception, e:
+            print e
         self.eliminated = False
         
         game.after(1,self.walk)

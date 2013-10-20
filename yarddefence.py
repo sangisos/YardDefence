@@ -86,7 +86,7 @@ class GameWindow(Canvas):
         enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
         self.activeEnemies.append(enemy)
         self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
-        self.after(1000,enemy.delete)
+        self.after(5000,enemy.delete)
         
     def deleteEnemy(self,enemy):
         self.activeEnemies.remove(enemy)

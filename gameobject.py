@@ -46,6 +46,8 @@ class GameObject:
             self.game.tag_bind(self.objectId,'<Button-1>',callback)
     
     def __del__(self):
+
+        print "del in gameobject: " + str(self)
         self.game.tag_unbind('<Button-1>',self.objectId)
         self.game.delete(self.objectId)
         del self.objectId

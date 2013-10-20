@@ -13,31 +13,42 @@ class Enemy(GameObject):
     
     def __init__(self,game):
         self.game=game
-        callback=self.enemyOnClick
+        self.hp=self.getStartHp()
+        
         x,y=game.width-50,randint(100,game.height-100)
-        #GameObject.__init__(self,game,x,y)
+        
         self.tag=hash(self)
+        
         self.objectIds = itertools.cycle([self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()])
+        
         self.objectId=next(self.objectIds)
         self.game.itemconfig(self.tag,state='normal')
-        self.game.tag_bind(self.tag,'<Button-1>',callback)
         
+        self.callback=self.enemyOnClick
+        self.game.tag_bind(self.tag,'<Button-1>',self.callback)
+        print "init " + str(self)
         game.after(1,self.walk)
         game.after(1,self.animate)
         
     
-    def __del__(self):
-        self.game.tag_unbind(self.tag,'<Button-1>')
-        self.game.delete(self.tag)
-        del self.objectId
-        del self.game
         
     def delete(self):
         self.game.deleteEnemy(self)
+        self.game.tag_unbind(self.tag,'<Button-1>')
+        self.eliminated=True
+        self.game.delete(self.tag)
+        del self.objectIds
+        del self.tag
+        del self
+        #self.__del__()
         
     @classmethod
     def getImages(cls):
         return cls.images
+    
+    @classmethod
+    def getStartHp(cls):
+        return cls.hp
     
     @classmethod
     def getSpeed(cls):
@@ -59,6 +70,12 @@ class Enemy(GameObject):
         elif not self.eliminated:
             self.game.after(100,self.animate)
             self.nextPicture()
+            
+    def eliminate(self):
+        coord = self.game.coords(self.tag)
+        self.delete()
+        #root.game.update_idletasks()
+        
         
     def nextPicture(self):
         self.game.itemconfig(self.objectId,state='hidden')
@@ -68,6 +85,10 @@ class Enemy(GameObject):
     def enemyOnClick(self,event):
 		self.game.score.currentScore = self.game.score.currentScore + 1
 		self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
+                self.hp=self.hp-1
+                if self.hp<=0:
+                    self.eliminate()
+                
     
 class Boss(Enemy):
     '''Boss base class'''

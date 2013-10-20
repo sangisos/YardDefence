@@ -28,14 +28,13 @@ class Enemy(GameObject):
         
         self.callback=self.enemyOnClick
         
-        for objId in self.objectIds:
-            self.game.tag_bind(objId,'<Button-1>',self.callback)
+        self.game.tag_bind(self.tag,'<Button-1>',self.callback)
         
-        game.after(10,self.walk)
-        game.after(11,self.animate)
+        game.after(1,self.walk)
+        game.after(1,self.animate)
         
     def __del__(self):
-        print "enemy deleted"
+        print "enemy deleted i enemybaseclass.__del__("+str(self)+")"
         
     def delete(self):
         try:
@@ -54,8 +53,8 @@ class Enemy(GameObject):
             del self.hp
             del self.objectId
             del self.eliminated
-        except:
-            print "fel i eliminate"
+        except Exception, e:
+            print "fel i eliminate: " + e
         #self.__del__()
     
             
@@ -86,9 +85,7 @@ class Enemy(GameObject):
         return cls.speed
     
     def move(self,dx,dy):
-        print "enemybaseclasses.move("+str(self)+","+str(dx)+","+str(dy)+")"
-        for objId in self.objectIds:
-            self.game.move(objId,dx,dy)
+        self.game.move(self.tag,dx,dy)
         
     def animate(self):
         try:

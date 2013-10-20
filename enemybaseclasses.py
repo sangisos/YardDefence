@@ -32,11 +32,8 @@ class Enemy(GameObject):
 			pass
 			
     def enemyOnClick(self,event):
-        #del self
-		print "jdksdkj"
-		self.game.itemconfig(self.game.currentScore.scoreText,text="hej")
-		#self.game.currentScore = self.game.currentScore + 1
-		#print self.game.currentScore
+		self.game.score.currentScore = self.game.score.currentScore + 1
+		self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
     
 class Boss(Enemy):
     '''Boss base class'''

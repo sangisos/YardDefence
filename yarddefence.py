@@ -65,7 +65,7 @@ class GameWindow(Canvas):
         del self.menuObject
         self.background=Background(self)
         self.hero=Hero(self)
-        self.currentScore = CurrentScore(self)
+        self.score = CurrentScore(self)
         
         self.lifeList = []
         lifePositionX = self.width/2.5
@@ -105,8 +105,8 @@ class StoryTeller(GameObject):
 
 class CurrentScore():
 	def __init__(self,game):
-		currentScore = 0
-		self.scoreText = game.create_text(game.width/2,40,text="Score: " + str(currentScore),anchor='c',fill='black',font=(game.font,20,"bold"))
+		self.currentScore = 0
+		self.scoreText = game.create_text(game.width/2,40,text="Score: " + str(self.currentScore),anchor='c',fill='black',font=(game.font,20,"bold"))
 
 def main():
     game=GameWindow()

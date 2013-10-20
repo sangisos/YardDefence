@@ -66,7 +66,7 @@ class GameWindow(Canvas):
         del self.menuObject
         self.background=Background(self)
         self.hero=Hero(self)
-        CurrentScore(self)
+        currentScore = CurrentScore(self)
         
         self.lifeList = []
         lifePositionX = self.width/2.5

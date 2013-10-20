@@ -8,12 +8,12 @@ class Enemy(GameObject):
     
     speed=5
     hp=1
+    eliminated = False
     
     
     def __init__(self,game):
         
-        GameObject.__init__(self,game,game.width-50,randint(100,game.height-100))
-        
+        GameObject.__init__(self,game,game.width-50,randint(100,game.height-100),callback=self.enemyOnClick)
         game.after(0,self.walk)
         
     
@@ -25,11 +25,21 @@ class Enemy(GameObject):
         pass
     
     def walk(self):
-        self.game.after(int(100/self.speed),self.walk)
-        self.move(-1,0)
+		if(self.eliminated == False):
+			self.game.after(int(100/self.speed),self.walk)
+			self.move(-1,0)
+		else:
+			pass
+			
+    def enemyOnClick(self,event):
+        #del self
+		print "jdksdkj"
+		#self.game.currentScore = self.game.currentScore + 1
+		#print self.game.currentScore
     
 class Boss(Enemy):
     '''Boss base class'''
+	
     
 def getEnemiesByLevel(self,level):
 	if(level==1):

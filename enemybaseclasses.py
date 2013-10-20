@@ -30,6 +30,12 @@ class Enemy(GameObject):
             self.game.tag_bind(self.tag,'<Button-1>',self.callback)
         except Exception, e:
             print e
+        print "kolla så att dessa tre rader stämmer överrens:"
+        print "----------------------------------------------"
+        print hash(self)
+        print self.tag
+        print self.game.gettags(self.objectId)[0]
+        print "----------------------------------------------"
         self.eliminated = False
         
         game.after(1,self.walk)

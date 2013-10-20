@@ -86,22 +86,23 @@ class GameWindow(Canvas):
         enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
         self.activeEnemies.append(enemy)
         self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
-        self.after(5000,enemy.delete)
         
     def killEnemy(self,enemy):
         self.activeEnemies.remove(enemy)
         self.deadEnemies.append(enemy)
         
     def deleteEnemy(self,enemy):
-        print "trying to delete enemy: " + str(enemy) + " from active"
+        print "trying to delete enemy: " + str(enemy) + " from active.",
         try:
             self.activeEnemies.remove(enemy)
+            print " success"
         except:
-            print "trying to delete enemy: " + str(enemy) + " from dead"
+            print "trying to delete enemy: " + str(enemy) + " from dead."
             try:
                 self.deadEnemies.remove(enemy)
+                print " success"
             except:
-                print str(enemy) + " nowhere to be found!"
+                print str(enemy) + " no reference here."
                 
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 

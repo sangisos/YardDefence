@@ -46,8 +46,6 @@ class GameObject:
             self.game.tag_bind(self.objectId,'<Button-1>',callback)
     
     def __del__(self):
-
-        print "del in gameobject: " + str(self)
         self.game.tag_unbind('<Button-1>',self.objectId)
         self.game.delete(self.objectId)
         del self.objectId
@@ -56,6 +54,10 @@ class GameObject:
     @classmethod
     def getImage(cls,number):
         return cls.images[number]
+    
+    @classmethod
+    def getWidth(cls):
+        return cls.images[0].width()
     
     @classmethod
     def getHeight(cls):

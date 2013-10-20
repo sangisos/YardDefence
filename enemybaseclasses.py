@@ -18,7 +18,7 @@ class Enemy(GameObject):
         
         x,y=game.width-50,randint(100,game.height-100)
         
-        self.tag=hash(self)
+        self.tag=str(hash(self))
         self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()]
         self.objectIdsCycle = itertools.cycle(self.objectIds)
         
@@ -26,20 +26,12 @@ class Enemy(GameObject):
         self.game.itemconfig(self.tag,state='normal')
         
         self.callback=self.enemyOnClick
-        try:
-            for objId in self.objectIds:
-                self.game.tag_bind(objId,'<Button-1>',self.callback)
-        except Exception, e:
-            print e
-        print "kolla så att dessa tre rader stämmer överrens:"
-        print "----------------------------------------------"
-        print hash(self)
-        print self.tag
-        print self.game.gettags(self.objectId)[0]
-        print "----------------------------------------------"
+        
+        for objId in self.objectIds:
+            self.game.tag_bind(objId,'<Button-1>',self.callback)
         
         game.after(10,self.walk)
-        game.after(10,self.animate)
+        game.after(11,self.animate)
         
     def __del__(self):
         print "enemy deleted"
@@ -93,6 +85,7 @@ class Enemy(GameObject):
         return cls.speed
     
     def move(self,dx,dy):
+        print "enemybaseclasses.move("+str(self)+","+str(dx)+","+str(dy)+")"
         self.game.move(self.tag,dx,dy)
         
     def animate(self):

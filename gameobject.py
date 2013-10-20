@@ -7,8 +7,11 @@ class _MetaGameObject(type):
             imageDir=os.curdir + os.sep + "images" + os.sep + str(classname).lower()
             filenames=[os.path.join(imageDir, f) for f in os.listdir(imageDir) if f.endswith(".gif")]
             filenames.sort()
-            if "Enemy" in bases:
-                dictionary["eliminatedImage"]=ImageTk.PhotoImage(image=Image.open(filenames.pop()))
+            if "Enemy" in str(bases) or "Boss" in str(bases):
+                popedname=filenames.pop()
+                print popedname
+                dictionary["eliminatedImage"]=ImageTk.PhotoImage(image=Image.open(popedname))
+                
             imgs=[Image.open(filename) for filename in filenames]
             if classname is "Background":
                 imgs=[img.resize((root.winfo_screenwidth(), root.winfo_screenheight()), Image.ANTIALIAS) for img in imgs]
@@ -44,10 +47,6 @@ class GameObject:
         self.game.delete(self.objectId)
         del self.objectId
         del self.game
-        
-        
-    def move(self,dx,dy):
-        self.game.move(self.objectId,dx,dy)
         
     #def nextPicture(self):
         #self.objectId=

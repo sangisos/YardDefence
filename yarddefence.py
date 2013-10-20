@@ -67,7 +67,7 @@ class GameWindow(Canvas):
         self.background=Background(self)
         self.hero=Hero(self)
         CurrentScore(self)
-        
+        self.resumeQueue = []
         self.lifeList = []
         lifePositionX = self.width/2.5
         for x in range(3):
@@ -84,7 +84,7 @@ class GameWindow(Canvas):
         enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
         self.activeEnemies.append(enemy)
         self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
-        self.after(20000,enemy.delete)
+        self.after(4000,enemy.delete)
         
     def deleteEnemy(self,enemy):
         self.activeEnemies.remove(enemy)

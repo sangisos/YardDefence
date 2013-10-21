@@ -46,7 +46,7 @@ class GameWindow(Canvas):
         buttonNumber = self.menuObject.getButtonNumber(event)
         self.difficulty = buttonNumber + 1
         self.level=1
-        self.initGame()
+        self.storyteller=StoryTeller(self)
         
     def confirmExit(self,event=None):
         self.pauseGame()
@@ -78,7 +78,6 @@ class GameWindow(Canvas):
             
         self.activeEnemies=[]
         self.deadEnemies=[]
-        self.storyteller=StoryTeller(self)
         self.after(0,self.doOneFrame)
         self.after(0,self.createEnemy)
             
@@ -115,9 +114,16 @@ class GameWindow(Canvas):
 
 class StoryTeller(GameObject):
 	def __init__(self,game):
+		#self.tag="storyTeller" + str(hash(self))
 		x,y = game.width/2,game.height/2
-		GameObject.__init__(self,game,x,y,'c')
-		game.create_text(x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",anchor='c',fill='black',font=game.storyFont)
+		GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
+		self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick)
+		#,anchor='c',fill='black',font=game.storyFont
+	def storyTellerOnClick(self,event):
+		#self.game.delete(self.tag)
+		self.game.delete(self.objectId)
+		self.game.delete(self.textObject)
+		self.initGame()
 
 class CurrentScore():
 	def __init__(self,game):

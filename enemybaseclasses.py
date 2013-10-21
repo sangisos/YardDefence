@@ -71,7 +71,7 @@ class Enemy(GameObject):
     def eliminate(self):
         x,y = self.game.coords(self.tag)
         self.eliminated=True
-        #self.game.killEnemy(self)
+        self.game.killEnemy(self)
         try:
             self.game.tag_unbind(self.tag,'<Button-1>')
             self.game.delete(self.tag)
@@ -80,6 +80,7 @@ class Enemy(GameObject):
         del self.objectIdsCycle
         del self.objectIds
         self.objectId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,tags=("Dead"))
+        #self.game.itemconfig(self.objectId,state='normal')
         
         
     @classmethod
@@ -111,12 +112,13 @@ class Enemy(GameObject):
     def walk(self):
         if self.game.gamePaused:
             self.game.resumeQueue.append(self.walk)
-        elif not self.eliminated and self.positionOfTailX>0:
-            self.game.after(int(100/self.speed),self.walk)
-            self.move(self.movePixels,0)
-            self.positionOfTailX=self.positionOfTailX+self.movePixels
-        else:
-            self.delete()
+        elif not self.eliminated:
+            if self.positionOfTailX>0:
+                self.game.after(int(100/self.speed),self.walk)
+                self.move(self.movePixels,0)
+                self.positionOfTailX=self.positionOfTailX+self.movePixels
+            else:
+                self.delete()
         
     def nextPicture(self):
         self.game.itemconfig(self.objectId,state='hidden')

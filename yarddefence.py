@@ -117,8 +117,7 @@ class StoryTeller(GameObject):
             game.background=Background(game)
             x,y = game.width/2,game.height/2
             GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
-            self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick)
-            #,anchor='c',fill='black',font=game.storyFont
+            self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick,color='black',font=game.storyFont)
         def storyTellerOnClick(self,event):
             #self.game.delete(self.tag)
             self.game.delete(self.objectId)

@@ -7,7 +7,11 @@ class Hero(GameObject):
 		self.game.itemconfig(self.tag,state='hidden')
 	
 	def heroShoot(self,event):
-		print "Shooooting"
+		self.game.itemconfig(self.game.hero.tag,image=self.getImage(1))
+		self.game.after(150,self.stopShoot)
+		
+	def stopShoot(self):
+		self.game.itemconfig(self.game.hero.tag,image=self.getImage(0))
 		
 	def show(self):
 		self.game.itemconfig(self.tag,state='normal')

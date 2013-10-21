@@ -118,6 +118,7 @@ class Enemy(GameObject):
                 self.move(self.movePixels,0)
                 self.positionOfTailX=self.positionOfTailX+self.movePixels
             else:
+                del self.game.lifeList[-1]
                 self.delete()
         
     def nextPicture(self):

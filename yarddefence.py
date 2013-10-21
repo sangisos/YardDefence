@@ -70,7 +70,7 @@ class GameWindow(Canvas):
         
         self.resumeQueue = []
         self.lifeList = []
-        lifePositionX = self.width/2.5
+        lifePositionX = self.width/2-165
         for x in range(3):
             self.lifeList.append(HeroLife(self,lifePositionX))
             lifePositionX = lifePositionX + 30

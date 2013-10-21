@@ -65,7 +65,6 @@ class GameWindow(Canvas):
     def initGame(self):
         del self.menuObject
         
-        CurrentScore(self)
         self.score = CurrentScore(self)
         self.hero.show()
         
@@ -105,7 +104,7 @@ class GameWindow(Canvas):
                 
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
-        #self.after(30,self.doOneFrame)
+        self.after(30,self.doOneFrame)
         ### Skriv kod efter här för att visa en frame
         #self.activeEnemies[0].walk(self,1)
         
@@ -128,7 +127,7 @@ class StoryTeller(GameObject):
 class CurrentScore():
 	def __init__(self,game):
 		self.currentScore = 0
-		self.scoreText = game.create_text(game.width/2,40,text="Score: " + str(self.currentScore),anchor='c',fill='black',font=(game.font,20,"bold"))
+		self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
 
 def main():
     game=GameWindow()

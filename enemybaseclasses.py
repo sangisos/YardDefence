@@ -115,9 +115,12 @@ class Enemy(GameObject):
             self.game.after(int(100/self.speed),self.walk)
             self.move(self.movePixels,0)
             self.positionOfTailX=self.positionOfTailX+self.movePixels
-        else:
+        elif self.eliminated:
             self.delete()
-        
+        else:
+            del self.game.lifeList[-1]
+            self.delete()
+            
     def nextPicture(self):
         self.game.itemconfig(self.objectId,state='hidden')
         self.objectId = next(self.objectIdsCycle)

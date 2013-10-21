@@ -104,7 +104,7 @@ class GameWindow(Canvas):
                 
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
-        self.after(30,self.doOneFrame)
+        #self.after(30,self.doOneFrame)
         ### Skriv kod efter här för att visa en frame
         #self.activeEnemies[0].walk(self,1)
         

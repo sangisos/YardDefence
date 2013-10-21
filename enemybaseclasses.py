@@ -30,8 +30,10 @@ class Enemy(GameObject):
         self.game.itemconfig(self.tag,state='normal')
         
         self.callback=self.enemyOnClick
+        self.callback2=game.hero.heroShoot
         
         self.game.tag_bind(self.tag,'<Button-1>',self.callback)
+        self.game.tag_bind(self.tag,'<Button-1>',self.callback2,'+')
         
         self.activeEnemies.append(self)
         

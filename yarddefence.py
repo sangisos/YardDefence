@@ -108,6 +108,9 @@ class GameWindow(Canvas):
         ### Skriv kod efter här för att visa en frame
         #self.activeEnemies[0].walk(self,1)
         
+    def gameOver(self):
+        self.gameOverText = self.create_text(self.width/2,self.height/2,text="Game Over",anchor='c',fill='black',font=(self.font,36,"bold"))
+        
         root.update()
         
 

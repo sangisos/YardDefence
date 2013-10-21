@@ -35,12 +35,13 @@ class GameObject:
     
     def __init__(self,game,x,y,anchor='nw',callback=None,text=None,color='black',imageNumber=0,font=None):
         self.game=game
+        self.tag="gameObject"+str(hash(self))
         if text:
             if font is None:
                 font=game.font
-            self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color,font=font)
+            self.objectId = self.game.create_text(x,y,anchor=anchor,text=text,fill=color,font=font,tags=self.tag)
         else:
-            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.getImage(imageNumber))
+            self.objectId = self.game.create_image(x,y,anchor=anchor,image=self.getImage(imageNumber),tags=self.tag)
         if callback:
             self.callback=callback
             self.game.tag_bind(self.objectId,'<Button-1>',callback)

@@ -21,7 +21,7 @@ class GameWindow(Canvas):
         # Standard font, används i gameobject om inget anges
         self.font=('Helvetica 12 normal')
         self.storyFont=('Helvetica 11 bold')
-        self.hero=None
+        self.hero=Hero(self)
         
         self.level=0
         self.difficulty=1
@@ -67,7 +67,7 @@ class GameWindow(Canvas):
         
         CurrentScore(self)
         self.score = CurrentScore(self)
-        self.hero=Hero(self)
+        self.hero.show()
         
         self.resumeQueue = []
         self.lifeList = []

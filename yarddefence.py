@@ -63,7 +63,6 @@ class GameWindow(Canvas):
     
     def initGame(self):
         del self.menuObject
-        self.background=Background(self)
         self.hero=Hero(self)
         
         CurrentScore(self)
@@ -114,17 +113,18 @@ class GameWindow(Canvas):
 
 class StoryTeller(GameObject):
 	def __init__(self,game):
-		#self.tag="storyTeller" + str(hash(self))
-		x,y = game.width/2,game.height/2
-		GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
-		self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick)
-		#,anchor='c',fill='black',font=game.storyFont
-	def storyTellerOnClick(self,event):
-		#self.game.delete(self.tag)
-		self.game.delete(self.objectId)
-		self.game.delete(self.textObject)
-		self.initGame()
-
+            #self.tag="storyTeller" + str(hash(self))
+            game.background=Background(game)
+            x,y = game.width/2,game.height/2
+            GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
+            self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick)
+            #,anchor='c',fill='black',font=game.storyFont
+        def storyTellerOnClick(self,event):
+            #self.game.delete(self.tag)
+            self.game.delete(self.objectId)
+            del self.textObject
+            self.game.initGame()
+            
 class CurrentScore():
 	def __init__(self,game):
 		self.currentScore = 0

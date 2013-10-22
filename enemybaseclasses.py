@@ -6,13 +6,14 @@ class Enemy(GameObject):
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=9 # Never above MAX_SPEED (CraAAaaAAaaZy fast). well... should be at least.....   FIXME DEBUG
-    MAX_SPEED=9
+    speed=0.5 # Never above MAX_SPEED (CraAAaaAAaaZy fast). well... should be at least.....   FIXME DEBUG
+    MAX_SPEED=1.0
     hp=1
     movePixels=-1
     eliminated=True # if not an instance.
     activeEnemies=[]
     deadEnemies=[]
+    currentTics=0.
     stepsTaken=0
     stepSize=2 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
     animationRunning=False
@@ -93,12 +94,17 @@ class Enemy(GameObject):
         
     @classmethod
     def moveAll(cls,game,tics):
-        maxSpeed=Enemy.MAX_SPEED+3-game.difficulty
+        maxSpeed=Enemy.MAX_SPEED-game.difficulty/6.0
+        print getEnemyClasses(game.level)
         for enemycls in getEnemyClasses(game.level):
-            if tics%(maxSpeed-enemycls.speed)==0:
+            enemycls.currentTics=enemycls.currentTics+tics
+            print enemycls
+            print enemycls.currentTics
+            print maxSpeed
+            if enemycls.currentTics>maxSpeed-enemycls.speed/2.0:
+                enemycls.currentTics=0
                 game.move(enemycls.classTag,-enemycls.stepSize,0)
                 enemycls.stepsTaken=enemycls.stepsTaken+enemycls.stepSize
-        
     @classmethod
     def missedEnemy(cls,game):
         #print "activeEmemies: " + str(cls.activeEnemies) ##############DEBUG#############
@@ -157,27 +163,20 @@ class Enemy(GameObject):
 class Boss(Enemy):
     '''Boss base class'''
 	
-    
-def getEnemiesByLevel(self,level):
-	if(level==1):
-		return ["enemy2","enemy3","enemy4"]
-	elif(level==2):
-		return ["enemy5","enemy6","enemy7"]
-	elif(level==3):
-		return ["enemy8","enemy9","enemy10"]
-
 class EnemyHandler:
     def __init__(self,game):
         self.game=game
+        self.lastTime=time.clock()
     
     def mainloop(self):
         if self.game.gameRunning:
-            self.game.after(2,self.mainloop)
-            print time.clock()
-            
-            
-            
-            
+            self.game.after(15,self.mainloop)
+            currentTime=time.clock()
+            enemyTicker=currentTime-self.lastTime
+            ####### Enemy main loop ##########
+            Enemy.moveAll(self.game,enemyTicker)
+            Enemy.missedEnemy(self.game)
+            ####### Enemy main loop end ##########
         elif self.game.gamePaused:
             self.game.resumeQueue.append(self.mainloop)
         else:

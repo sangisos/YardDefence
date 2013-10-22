@@ -62,3 +62,7 @@ class boss3(Boss):
     '''Boss 3'''
     level=3
     hp=50
+
+for lev in range(1,4):
+    for ec in getEnemyClasses(lev):
+        ec.classTag="class"+str(ec.__name__)

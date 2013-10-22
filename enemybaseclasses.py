@@ -1,29 +1,27 @@
 # encoding: utf-8
 from gameobject import *
-
+import inspect,sys
 class Enemy(GameObject):
     '''Enemy base class
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=8
+    speed=1 # Never above MAX_SPEED (CraAAaaAAaaZy fast)
+    MAX_SPEED=9
     hp=1
     movePixels=-1
-    eliminated=True
+    eliminated=True # if not an instance.
     activeEnemies=[]
     deadEnemies=[]
     
     def __init__(self,game):
         self.eliminated = False
         self.game=game
-        self.hp=self.getStartHp()
         self.positionOfTailX=game.winfo_width()+self.getWidth()
         margintopbottom=game.winfo_height()/7
         x,y=game.winfo_width()-50,randint(margintopbottom,margintopbottom*6)
-        
         self.tag="enemy"+str(hash(self))
-        
-        self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()]
+        self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,self.classTag,"Enemy")) for image in self.getImages()]
         self.objectIdsCycle = itertools.cycle(self.objectIds)
         
         self.objectId=next(self.objectIdsCycle)
@@ -37,7 +35,7 @@ class Enemy(GameObject):
         
         self.activeEnemies.append(self)
         
-        game.after(1,self.walk)
+        #game.after(1,self.walk)
         game.after(1,self.animate)
         
     def __del__(self):
@@ -87,16 +85,16 @@ class Enemy(GameObject):
     def getImages(cls):
         return cls.images
     
-    @classmethod
-    def getStartHp(cls):
-        return cls.hp
-    
-    @classmethod
-    def getSpeed(cls):
-        return cls.speed
-    
     def move(self,dx,dy):
         self.game.move(self.tag,dx,dy)
+        
+    @classmethod
+    def moveAll(cls,game,tics):
+        maxSpeed=Enemy.MAX_SPEED+3-game.difficulty
+        for enemycls in getEnemyClasses(game.level):
+            if tics%(maxSpeed-enemycls.speed)==0:
+                game.move(enemycls.classTag,enemycls.movePixels,0)
+                #self.positionOfTailX=self.positionOfTailX+self.movePixels
         
     def animate(self):
         try:
@@ -148,3 +146,11 @@ def getEnemiesByLevel(self,level):
 		return ["enemy5","enemy6","enemy7"]
 	elif(level==3):
 		return ["enemy8","enemy9","enemy10"]
+
+class EnemyHandler:
+    def __init__(self,game):
+        self.game=game
+
+def getEnemyClasses(level):
+    '''gives all enemies as a list of classes'''
+    return [enemyClass[1] for enemyClass in inspect.getmembers(sys.modules["enemyclasses"], lambda member: inspect.isclass(member) and member.__module__ == "enemyclasses") if not issubclass(enemyClass[1],Boss) and enemyClass[1].level == level]

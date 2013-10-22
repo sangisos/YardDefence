@@ -8,7 +8,7 @@ class GameWindow(Canvas):
         # Runs in fullscreen
         root.attributes('-fullscreen', True)
         
-        
+        self.gameTicker=0
         self.width = root.winfo_screenwidth()
         self.height = root.winfo_screenheight()
         self.centerx = self.width/2
@@ -104,15 +104,17 @@ class GameWindow(Canvas):
                 
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
-        self.after(30,self.doOneFrame)
+        self.after(3,self.doOneFrame)
+        self.gameTicker=self.gameTicker+1
         ### Skriv kod efter här för att visa en frame
         #self.activeEnemies[0].walk(self,1)
+        Enemy.moveAll(self,self.gameTicker)
         
-    def gameOver(self):
-        self.gameOverText = self.create_text(self.width/2,self.height/2,text="Game Over",anchor='c',fill='black',font=(self.font,36,"bold"))
         
         root.update()
-        
+    
+    def gameOver(self):
+        self.gameOverText = self.create_text(self.width/2,self.height/2,text="Game Over",anchor='c',fill='black',font=(self.font,36,"bold"))
 
 class StoryTeller(GameObject):
 	def __init__(self,game):

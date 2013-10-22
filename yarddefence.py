@@ -145,6 +145,7 @@ class CurrentScore():
         self.currentScore = self.game.score.currentScore + 1
         self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
         if(self.currentScore == self.game.level*50):
+            self.game.level = self.game.level + 1
             print "Boss is coming"
 
 

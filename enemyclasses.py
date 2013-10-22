@@ -13,7 +13,7 @@ class enemy3(Enemy):
 
 class enemy4(Enemy):
     '''Enemy 4'''
-    level=2
+    level=1
     hp=2
 
 class enemy5(Enemy):
@@ -28,7 +28,7 @@ class enemy6(Enemy):
 
 class enemy7(Enemy):
     '''Enemy 7'''
-    level=3
+    level=2
     hp=7
 
 class enemy8(Enemy):

@@ -79,15 +79,13 @@ class GameWindow(Canvas):
         self.deadEnemies=[]
         self.after(0,self.doOneFrame)
         self.after(0,self.createEnemy)
+        self.after(2000,self.createEnemy)
             
     def createEnemy(self):
-        enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
-        self.activeEnemies.append(enemy)
-        self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
-        
-    def killEnemy(self,enemy):
-        self.activeEnemies.remove(enemy)
-        self.deadEnemies.append(enemy)
+        random.choice(getEnemyClasses(self.level))(self)
+        #enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
+        #self.activeEnemies.append(enemy)
+        #self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
         
     def deleteEnemy(self,enemy):
         print "trying to delete enemy: " + str(enemy) + " from active.",
@@ -104,12 +102,12 @@ class GameWindow(Canvas):
                 
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
-        self.after(3,self.doOneFrame)
+        self.after(300,self.doOneFrame)
         self.gameTicker=self.gameTicker+1
         ### Skriv kod efter här för att visa en frame
         #self.activeEnemies[0].walk(self,1)
         Enemy.moveAll(self,self.gameTicker)
-        
+        Enemy.missedEnemy(self)
         
         root.update()
     

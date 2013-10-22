@@ -22,11 +22,15 @@ class GameWindow(Canvas):
         self.font=('Helvetica 12 normal')
         self.storyFont=('Helvetica 11 bold')
         self.hero=Hero(self)
+        self.enemy=EnemyHandler(self)
+        
+        self.resumeQueue = []
         
         self.level=0
         self.difficulty=1
         self.menuObject=None
         self.gamePaused=False
+        self.gameRunning=False
         
         
         root.bind('<Escape>',self.confirmExit)
@@ -61,55 +65,50 @@ class GameWindow(Canvas):
     
     def continueGame(self,event=None):
         self.gamePaused=False
+        while self.resumeQueue:
+            self.after(0,self.resumeQueue.pop())
     
     def initGame(self):
         del self.menuObject
-        
+        self.gameRunning=True
         self.score = CurrentScore(self)
         self.hero.show()
+        self.enemy.mainloop()
         
-        self.resumeQueue = []
         self.lifeList = []
         lifePositionX = self.width/2-165
         for x in range(3):
             self.lifeList.append(HeroLife(self,lifePositionX))
             lifePositionX = lifePositionX + 30
             
-        self.activeEnemies=[]
-        self.deadEnemies=[]
         self.after(0,self.doOneFrame)
         self.after(0,self.createEnemy)
         self.after(2000,self.createEnemy)
+        self.after(4000,self.createEnemy)
+        self.after(6000,self.createEnemy)
             
     def createEnemy(self):
         random.choice(getEnemyClasses(self.level))(self)
         #enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
-        #self.activeEnemies.append(enemy)
         #self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
         
-    def deleteEnemy(self,enemy):
-        print "trying to delete enemy: " + str(enemy) + " from active.",
-        try:
-            self.activeEnemies.remove(enemy)
-            print " success"
-        except:
-            print "trying to delete enemy: " + str(enemy) + " from dead."
-            try:
-                self.deadEnemies.remove(enemy)
-                print " success"
-            except:
-                print str(enemy) + " no reference here."
-                
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
-        self.after(300,self.doOneFrame)
-        self.gameTicker=self.gameTicker+1
-        ### Skriv kod efter här för att visa en frame
-        #self.activeEnemies[0].walk(self,1)
-        Enemy.moveAll(self,self.gameTicker)
-        Enemy.missedEnemy(self)
-        
-        root.update()
+        if self.gameRunning:
+            self.after(5,self.doOneFrame)  ######### DEBUG ########## should be 2 to 30
+            root.update()
+        elif self.gamePaused:
+            self.resumeQueue.append(self.doOneFrame)
+            root.update()
+        else:
+            self.gameTicker=self.gameTicker+1
+            ### Skriv kod efter här för att visa en frame
+            #self.activeEnemies[0].walk(self,1)
+            self.enemy.createRandom()
+            self.enemy.moveAll()
+            self.enemy.missedEnemy()
+            
+            root.update()
     
     def gameOver(self):
         self.gameOverText = self.create_text(self.width/2,self.height/2,text="Game Over",anchor='c',fill='black',font=(self.font,36,"bold"))

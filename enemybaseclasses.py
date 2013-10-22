@@ -14,7 +14,7 @@ class Enemy(GameObject):
     activeEnemies=[]
     deadEnemies=[]
     stepsTaken=0
-    stepSize=100 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
+    stepSize=2 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
     animationRunning=False
     
     def __init__(self,game):
@@ -62,25 +62,24 @@ class Enemy(GameObject):
         del self.objectId
         del self.eliminatedId
         del self.game
-        print "referrers: ",
-        print gc.get_referrers(self)
-        print "referents: ",
-        print gc.get_referents(self)
+        #print "referrers: ",
+        #print gc.get_referrers(self)
+        #print "referents: ",
+        #print gc.get_referents(self)
     
     def eliminate(self):
         x,y = self.game.coords(self.tag)
         self.eliminated=True
-        if True: #try:
-            self.activeEnemies.remove(self)
-            self.deadEnemies.append(self)
-            self.game.tag_unbind(self.tag,'<Button-1>',self.funcId)
-            self.game.delete(self.tag)
-            self.objectId=self.eliminatedId
-            self.game.dtag(self.objectId,self.classTag)
-            self.game.tag_bind(self.objectId,'<Button-1>',self.game.hero.heroShoot)
-            self.game.itemconfig(self.objectId,state='normal')
-        #except Exception:
-        #    print "fel i ebc.eliminate"
+        
+        self.activeEnemies.remove(self)
+        self.deadEnemies.append(self)
+        self.game.tag_unbind(self.tag,'<Button-1>',self.funcId)
+        self.game.delete(self.tag)
+        self.objectId=self.eliminatedId
+        self.game.dtag(self.objectId,self.classTag)
+        self.game.tag_bind(self.objectId,'<Button-1>',self.game.hero.heroShoot)
+        self.game.itemconfig(self.objectId,state='normal')
+        
         del self.objectIdsCycle
         del self.objectIds
         
@@ -102,7 +101,7 @@ class Enemy(GameObject):
         
     @classmethod
     def missedEnemy(cls,game):
-        print "activeEmemies: " + str(cls.activeEnemies) ##############DEBUG#############
+        #print "activeEmemies: " + str(cls.activeEnemies) ##############DEBUG#############
         for enemy in Enemy.activeEnemies:
             if enemy.endStep<enemy.stepsTaken:
                 if game.lifeList:
@@ -114,7 +113,7 @@ class Enemy(GameObject):
     
     @classmethod
     def animateAll(cls):
-        cls.animationRunning=True
+        pass
         
     def animate(self):
         try:
@@ -170,6 +169,27 @@ def getEnemiesByLevel(self,level):
 class EnemyHandler:
     def __init__(self,game):
         self.game=game
+    
+    def mainloop(self):
+        if self.game.gameRunning:
+            self.game.after(2,self.mainloop)
+            print time.clock()
+            
+            
+            
+            
+        elif self.game.gamePaused:
+            self.game.resumeQueue.append(self.mainloop)
+        else:
+            print "EnemyHandler mainloop ended" ######## DEBUG ######
+            
+    def createEnemy(self):
+        random.choice(getEnemyClasses(self.level))(self)
+
+
+
+
+
 
 def getEnemyClasses(level):
     '''gives all enemies at level=<level> as a list of classes'''

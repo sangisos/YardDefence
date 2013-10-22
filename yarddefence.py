@@ -112,7 +112,12 @@ class GameWindow(Canvas):
     
     def gameOver(self):
         self.gameOverText = self.create_text(self.width/2,self.height/2,text="Game Over",anchor='c',fill='black',font=(self.font,36,"bold"))
-
+        self.textObject=Text(self,self.width/2,self.height/2+100,text="Play again",callback=self.restartGame,color='black',font=(self.font,28,"bold"))
+    
+    def restartGame(self):
+        pass
+        
+    
 class StoryTeller(GameObject):
 	def __init__(self,game):
             self.level1Text = "Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart"

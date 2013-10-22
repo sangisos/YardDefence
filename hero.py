@@ -6,7 +6,7 @@ class Hero(GameObject):
 		GameObject.__init__(self,game,125,game.height/2.5,'c',callback=self.heroShoot)
 		self.game.itemconfig(self.tag,state='hidden')
 	
-	def heroShoot(self,event):
+	def heroShoot(self,event=None):
 		self.game.itemconfig(self.game.hero.tag,image=self.getImage(1))
 		self.game.after(150,self.stopShoot)
 		

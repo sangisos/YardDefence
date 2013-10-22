@@ -131,9 +131,16 @@ class StoryTeller(GameObject):
             self.game.initGame()
             
 class CurrentScore():
-	def __init__(self,game):
-		self.currentScore = 0
-		self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
+    def __init__(self,game):
+        self.game=game
+        self.currentScore = 0
+        self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
+        
+    def addPoint(self):
+        self.currentScore = self.game.score.currentScore + 1
+        self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
+
+
 
 def main():
     game=GameWindow()

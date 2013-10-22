@@ -6,7 +6,7 @@ class Enemy(GameObject):
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=9 # Never above MAX_SPEED (CraAAaaAAaaZy fast)
+    speed=9 # Never above MAX_SPEED (CraAAaaAAaaZy fast). well... should be at least.....   FIXME DEBUG
     MAX_SPEED=9
     hp=1
     movePixels=-1
@@ -14,7 +14,7 @@ class Enemy(GameObject):
     activeEnemies=[]
     deadEnemies=[]
     stepsTaken=0
-    stepSize=100
+    stepSize=100 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
     animationRunning=False
     
     def __init__(self,game):
@@ -25,18 +25,17 @@ class Enemy(GameObject):
         margintopbottom=game.winfo_height()/7
         x,y=game.winfo_width()-50,randint(margintopbottom,margintopbottom*6)
         self.tag="enemy"+str(hash(self))
+        self.tagDead="dead"+str(hash(self))
         self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,self.classTag,"Enemy")) for image in self.getImages()]
-        self.eliminatedId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,state='hidden',tags=(self.tag,self.classTag,"Enemy","Dead"))
+        self.eliminatedId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,state='hidden',tags=(self.tagDead,self.classTag,"Dead"))
         self.objectIdsCycle = itertools.cycle(self.objectIds)
         
         self.objectId=next(self.objectIdsCycle)
         self.game.itemconfig(self.objectId,state='normal')
         
         self.callback=self.enemyOnClick
-        self.callback2=game.hero.heroShoot
         
-        self.game.tag_bind(self.tag,'<Button-1>',self.callback)
-        self.game.tag_bind(self.tag,'<Button-1>',self.callback2,'+')
+        self.funcId=self.game.tag_bind(self.tag,'<Button-1>',self.callback)
         
         self.activeEnemies.append(self)
         
@@ -47,14 +46,14 @@ class Enemy(GameObject):
         print "enemy deleted i enemybaseclass.__del__("+str(self)+")"
         
     def delete(self):
-        self.game.tag_unbind(self.objectId,'<Button-1>')
-        self.game.tag_unbind(self.tag,'<Button-1>')
         if not self.eliminated:
+            self.game.tag_unbind(self.tag,'<Button-1>',self.funcId)
             self.activeEnemies.remove(self)
             self.eliminated=True
             del self.objectIdsCycle
             del self.objectIds
         else:
+            self.game.tag_unbind(self.tagDead,'<Button-1>')
             self.deadEnemies.remove(self)
             
         self.game.delete(self.tag)
@@ -62,7 +61,6 @@ class Enemy(GameObject):
         del self.callback
         del self.objectId
         del self.eliminatedId
-        del self.callback2
         del self.game
         print "referrers: ",
         print gc.get_referrers(self)
@@ -72,19 +70,19 @@ class Enemy(GameObject):
     def eliminate(self):
         x,y = self.game.coords(self.tag)
         self.eliminated=True
-        self.activeEnemies.remove(self)
-        self.deadEnemies.append(self)
-        try:
-            self.game.tag_unbind(self.tag,'<Button-1>')
+        if True: #try:
+            self.activeEnemies.remove(self)
+            self.deadEnemies.append(self)
+            self.game.tag_unbind(self.tag,'<Button-1>',self.funcId)
             self.game.delete(self.tag)
-        except:
-            print "fel i ebc.eliminate"
+            self.objectId=self.eliminatedId
+            self.game.dtag(self.objectId,self.classTag)
+            self.game.tag_bind(self.objectId,'<Button-1>',self.game.hero.heroShoot)
+            self.game.itemconfig(self.objectId,state='normal')
+        #except Exception:
+        #    print "fel i ebc.eliminate"
         del self.objectIdsCycle
         del self.objectIds
-        self.objectId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,tags=("Dead"))
-        self.game.tag_bind(self.objectId,'<Button-1>',self.callback2)
-        self.game.itemconfig(self.objectId,state='normal')
-        self.game.after(5000,self.delete)
         
         
     @classmethod
@@ -150,11 +148,11 @@ class Enemy(GameObject):
         self.game.itemconfig(self.objectId,state='normal')
 			
     def enemyOnClick(self,event):
-		self.game.score.currentScore = self.game.score.currentScore + 1
-		self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
-                self.hp=self.hp-1
-                if self.hp<=0:
-                    self.eliminate()
+        self.game.hero.heroShoot()
+        self.game.score.addPoint()
+        self.hp=self.hp-1
+        if self.hp<=0:
+            self.eliminate()
                 
     
 class Boss(Enemy):

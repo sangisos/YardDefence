@@ -27,7 +27,7 @@ class GameWindow(Canvas):
         self.difficulty=1
         self.menuObject=None
         self.gamePaused=False
-        
+        self.bossJustDied=False
         
         root.bind('<Escape>',self.confirmExit)
         
@@ -46,7 +46,6 @@ class GameWindow(Canvas):
     def startWithDifficultyCallback(self,event):
         buttonNumber = self.menuObject.getButtonNumber(event)
         self.difficulty = buttonNumber + 1
-        self.level=1
         self.storyteller=StoryTeller(self)
         
     def confirmExit(self,event=None):
@@ -63,8 +62,10 @@ class GameWindow(Canvas):
         self.gamePaused=False
     
     def initGame(self):
-        del self.menuObject
-        
+        try:
+            del self.menuObject
+        except:
+            pass
         self.score = CurrentScore(self)
         self.hero.show()
         
@@ -83,11 +84,18 @@ class GameWindow(Canvas):
     def createEnemy(self):
         enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
         self.activeEnemies.append(enemy)
-        self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
+        if self.bossJustDied:
+            self.after(5000,self.tellStory)
+            self.bossJustDied=False
+        else:
+            self.after(randint(400,4000)/(self.difficulty),self.createEnemy)
         
     def killEnemy(self,enemy):
-        self.activeEnemies.remove(enemy)
-        self.deadEnemies.append(enemy)
+        try:
+            self.activeEnemies.remove(enemy)
+            self.deadEnemies.append(enemy)
+        except:
+            pass
         
     def deleteEnemy(self,enemy):
         print "trying to delete enemy: " + str(enemy) + " from active.",
@@ -113,27 +121,26 @@ class GameWindow(Canvas):
         
         root.update()
         
-
-class StoryTeller(GameObject):
-	def __init__(self,game):
-            #self.tag="storyTeller" + str(hash(self))
-            game.background=Background(game)
-            x,y = game.width/2,game.height/2
-            GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
-            self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick,color='black',font=game.storyFont)
-            #Oh my good, these animals are CRAZY! \nI have an idea, lets dig a river through our lands, \nmaybe that will keep the animals away. \n\nRegards, \nLennart"
-            #Looks like the river is to small for theese even crazier animals. \nBut hey, I have an even CRAZIER idea. \nI have some old dynamites in my basement, lets use them to blow up some more land. \Im sure that will stop the animals from destroying our farms. \nGood luck! \n\nRegards, \nLennart
-            #If you read this I assume that you are still alive \nand have defeated the CRAZY big boat of wild animals. \nI saw them, they loaded the boat with all the remainings \of their army. Our farms are now safe. \nCongratulations! \n\nGreetings, \nLennart \n\nScore: " + currentScore
-        def storyTellerOnClick(self,event):
-            #self.game.delete(self.tag)
-            self.game.delete(self.objectId)
-            del self.textObject
-            self.game.initGame()
+    def tellStory(self,event=None):
+        self.storyteller=StoryTeller(self)
             
 class CurrentScore():
-	def __init__(self,game):
-		self.currentScore = 0
-		self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
+    def __init__(self,game):
+        self.game=game
+        self.currentScore = 0
+        self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
+        
+    def addPoint(self):
+        self.currentScore = self.currentScore + 1
+        self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
+        if(self.currentScore == self.game.level*10):
+            if self.game.level == 1:
+                self.game.boss=boss1(self.game)
+            elif self.game.level == 2:
+                self.game.boss=boss2(self.game)
+            elif self.game.level == 3:
+                self.game.boss=boss3(self.game)
+
 
 def main():
     game=GameWindow()

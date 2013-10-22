@@ -9,4 +9,5 @@ from hero import *
 from enemybaseclasses import *
 from enemyclasses import *
 from herolife import *
+from storyteller import *
 import random

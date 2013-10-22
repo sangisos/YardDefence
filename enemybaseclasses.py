@@ -71,6 +71,8 @@ class Enemy(GameObject):
     def eliminate(self):
         x,y = self.game.coords(self.tag)
         self.eliminated=True
+        if isinstance(self,Boss):
+            self.game.bossJustDied=True
         self.game.killEnemy(self)
         try:
             self.game.tag_unbind(self.tag,'<Button-1>')
@@ -130,11 +132,10 @@ class Enemy(GameObject):
         self.game.itemconfig(self.objectId,state='normal')
 			
     def enemyOnClick(self,event):
-		self.game.score.currentScore = self.game.score.currentScore + 1
-		self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
-                self.hp=self.hp-1
-                if self.hp<=0:
-                    self.eliminate()
+        self.game.score.addPoint()
+        self.hp=self.hp-1
+        if self.hp<=0:
+            self.eliminate()
                 
     
 class Boss(Enemy):

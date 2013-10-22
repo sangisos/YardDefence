@@ -1,126 +1,102 @@
 # encoding: utf-8
 from gameobject import *
-import inspect,sys,gc
+
 class Enemy(GameObject):
     '''Enemy base class
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=0.1 # Never above MAX_SPEED (CraAAaaAAaaZy fast). well... should be at least.....   FIXME DEBUG
-    MAX_SPEED=1.0
+    speed=8
     hp=1
     movePixels=-1
-    eliminated=True # if not an instance.
+    eliminated=True
     activeEnemies=[]
     deadEnemies=[]
-    currentTics=0.
-    stepsTaken=0
-    stepSize=4 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
-    animationRunning=False
     
     def __init__(self,game):
         self.eliminated = False
         self.game=game
+        self.hp=self.getStartHp()
         self.positionOfTailX=game.winfo_width()+self.getWidth()
-        self.endStep=self.stepsTaken+game.winfo_width()+self.getWidth()
         margintopbottom=game.winfo_height()/7
         x,y=game.winfo_width()-50,randint(margintopbottom,margintopbottom*6)
+        
         self.tag="enemy"+str(hash(self))
-        self.tagDead="dead"+str(hash(self))
-        self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,self.classTag,"Enemy")) for image in self.getImages()]
-        self.eliminatedId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,state='hidden',tags=(self.tagDead,self.classTag,"Dead"))
+        
+        self.objectIds=[self.game.create_image(x,y,anchor='sw',image=image,state='hidden',tags=(self.tag,"Enemy")) for image in self.getImages()]
         self.objectIdsCycle = itertools.cycle(self.objectIds)
         
         self.objectId=next(self.objectIdsCycle)
-        self.game.itemconfig(self.objectId,state='normal')
+        self.game.itemconfig(self.tag,state='normal')
         
         self.callback=self.enemyOnClick
+        self.callback2=game.hero.heroShoot
         
-        self.funcId=self.game.tag_bind(self.tag,'<Button-1>',self.callback)
+        self.game.tag_bind(self.tag,'<Button-1>',self.callback)
+        self.game.tag_bind(self.tag,'<Button-1>',self.callback2,'+')
         
         self.activeEnemies.append(self)
         
-        #game.after(1,self.walk)
-        #game.after(1,self.animate)
+        game.after(1,self.walk)
+        game.after(1,self.animate)
         
     def __del__(self):
         print "enemy deleted i enemybaseclass.__del__("+str(self)+")"
         
     def delete(self):
-        if not self.eliminated:
-            self.game.tag_unbind(self.tag,'<Button-1>',self.funcId)
+  #      try:
+            #self.game.deleteEnemy(self)
             self.activeEnemies.remove(self)
-            self.eliminated=True
-            del self.objectIdsCycle
-            del self.objectIds
-        else:
-            self.game.tag_unbind(self.tagDead,'<Button-1>')
-            self.deadEnemies.remove(self)
+            if not self.eliminated:
+                self.eliminated=True
+                for o in self.objectIds:
+                    self.game.tag_unbind(o,'<Button-1>')
+                    self.game.delete(o)
+                self.game.tag_unbind(self.tag,'<Button-1>')
+                del self.objectIdsCycle
+                del self.objectIds
             
-        self.game.delete(self.tag)
-        self.game.delete(self.objectId)
-        del self.callback
-        del self.objectId
-        del self.eliminatedId
-        del self.game
-        #print "referrers: ",
-        #print gc.get_referrers(self)
-        #print "referents: ",
-        #print gc.get_referents(self)
+            self.game.delete(self.tag)
+            self.game.delete(self.objectId)
+            del self.callback
+            del self.tag
+            del self.hp
+            del self.objectId
+            del self.eliminated
+#        except Exception, e:
+ #           print "fel i ebc.delete: " + str(e)
+        #self.__del__()
     
+            
     def eliminate(self):
-        x,y = self.game.coords(self.objectId)
+        x,y = self.game.coords(self.tag)
         self.eliminated=True
-        
-        self.activeEnemies.remove(self)
-        self.deadEnemies.append(self)
-        self.game.tag_unbind(self.tag,'<Button-1>',self.funcId)
-        self.game.delete(self.tag)
-        self.objectId=self.eliminatedId
-        self.game.dtag(self.objectId,self.classTag)
-        self.game.tag_bind(self.objectId,'<Button-1>',self.game.hero.heroShoot)
-        self.game.itemconfig(self.objectId,image=self.eliminatedImage,state='normal')
-        
+        self.game.killEnemy(self)
+        try:
+            self.game.tag_unbind(self.tag,'<Button-1>')
+            self.game.delete(self.tag)
+        except:
+            print "fel i ebc.eliminate"
         del self.objectIdsCycle
         del self.objectIds
+        self.objectId=self.game.create_image(x,y,anchor='sw',image=self.eliminatedImage,tags=("Dead"))
+        #self.game.itemconfig(self.objectId,state='normal')
         
         
     @classmethod
     def getImages(cls):
         return cls.images
     
-    def move(self,dx,dy):
-        self.game.move(self.tag,dx,dy)
-        
     @classmethod
-    def moveAll(cls,game,tics):
-        maxSpeed=Enemy.MAX_SPEED-game.difficulty/6.0
-        #print getEnemyClasses(game.level)
-        for enemycls in getEnemyClasses(game.level):
-            enemycls.currentTics=enemycls.currentTics+tics
-            #print enemycls
-            #print enemycls.currentTics
-            #print maxSpeed
-            if enemycls.currentTics>maxSpeed-enemycls.speed/2.0:
-                enemycls.currentTics=0
-                game.move(enemycls.classTag,-enemycls.stepSize,0)
-                game.itemconfig(enemycls.classTag,image=next(enemycls.imageCycle))
-                enemycls.stepsTaken=enemycls.stepsTaken+enemycls.stepSize
-    @classmethod
-    def missedEnemy(cls,game):
-        #print "activeEmemies: " + str(cls.activeEnemies) ##############DEBUG#############
-        for enemy in Enemy.activeEnemies:
-            if enemy.endStep<enemy.stepsTaken:
-                if game.lifeList:
-                    del game.lifeList[-1]
-                if not game.lifeList:
-                    game.gameOver()
-                enemy.delete()
-        
+    def getStartHp(cls):
+        return cls.hp
     
     @classmethod
-    def animateAll(cls):
-        pass
+    def getSpeed(cls):
+        return cls.speed
+    
+    def move(self,dx,dy):
+        self.game.move(self.tag,dx,dy)
         
     def animate(self):
         try:
@@ -154,46 +130,21 @@ class Enemy(GameObject):
         self.game.itemconfig(self.objectId,state='normal')
 			
     def enemyOnClick(self,event):
-        self.game.hero.heroShoot()
-        self.game.score.addPoint()
-        self.hp=self.hp-1
-        if self.hp<=0:
-            self.eliminate()
+		self.game.score.currentScore = self.game.score.currentScore + 1
+		self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
+                self.hp=self.hp-1
+                if self.hp<=0:
+                    self.eliminate()
                 
     
 class Boss(Enemy):
     '''Boss base class'''
 	
-class EnemyHandler:
-    def __init__(self,game):
-        self.game=game
-        self.enemyTicker=0
-        self.timeForEnemy=0
-    def mainloop(self):
-        if self.game.gameRunning:
-            self.game.after(30,self.mainloop)
-            self.enemyTicker=self.enemyTicker+0.1
-            ####### Enemy main loop ##########
-            Enemy.moveAll(self.game,self.enemyTicker)
-            Enemy.missedEnemy(self.game)
-            self.createEnemy()
-            ####### Enemy main loop end ##########
-            self.game.update()
-        elif self.game.gamePaused:
-            self.game.resumeQueue.append(self.mainloop)
-        else:
-            print "EnemyHandler mainloop ended" ######## DEBUG ######
-            
-    def createEnemy(self):
-        self.
-        if >timeForEnemy
-        random.choice(getEnemyClasses(self.level))(self)
-
-
-
-
-
-
-def getEnemyClasses(level):
-    '''gives all enemies at level=<level> as a list of classes'''
-    return [enemyClass[1] for enemyClass in inspect.getmembers(sys.modules["enemyclasses"], lambda member: inspect.isclass(member) and member.__module__ == "enemyclasses") if not issubclass(enemyClass[1],Boss) and enemyClass[1].level == level]
+    
+def getEnemiesByLevel(self,level):
+	if(level==1):
+		return ["enemy2","enemy3","enemy4"]
+	elif(level==2):
+		return ["enemy5","enemy6","enemy7"]
+	elif(level==3):
+		return ["enemy8","enemy9","enemy10"]

@@ -13,7 +13,7 @@ class enemy3(Enemy):
 
 class enemy4(Enemy):
     '''Enemy 4'''
-    level=1
+    level=2
     hp=2
 
 class enemy5(Enemy):
@@ -28,7 +28,7 @@ class enemy6(Enemy):
 
 class enemy7(Enemy):
     '''Enemy 7'''
-    level=2
+    level=3
     hp=7
 
 class enemy8(Enemy):
@@ -62,7 +62,3 @@ class boss3(Boss):
     '''Boss 3'''
     level=3
     hp=50
-
-for lev in range(1,4):
-    for ec in getEnemyClasses(lev):
-        ec.classTag="class"+str(ec.__name__)

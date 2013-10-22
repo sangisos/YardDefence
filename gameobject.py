@@ -19,7 +19,6 @@ class _MetaGameObject(type):
                 imgs=[img.resize((root.winfo_screenwidth(), root.winfo_screenheight()), Image.ANTIALIAS) for img in imgs]
             
             dictionary["images"] = [ImageTk.PhotoImage(image=img) for img in imgs]
-            dictionary["imageCycle"] = itertools.cycle(dictionary["images"])
             
         return type.__new__(mcs, classname, bases, dictionary)
 

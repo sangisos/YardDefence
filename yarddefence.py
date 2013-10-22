@@ -8,7 +8,7 @@ class GameWindow(Canvas):
         # Runs in fullscreen
         root.attributes('-fullscreen', True)
         
-        self.gameTicker=0
+        
         self.width = root.winfo_screenwidth()
         self.height = root.winfo_screenheight()
         self.centerx = self.width/2
@@ -22,15 +22,11 @@ class GameWindow(Canvas):
         self.font=('Helvetica 12 normal')
         self.storyFont=('Helvetica 11 bold')
         self.hero=Hero(self)
-        self.enemy=EnemyHandler(self)
-        
-        self.resumeQueue = []
         
         self.level=0
         self.difficulty=1
         self.menuObject=None
         self.gamePaused=False
-        self.gameRunning=False
         
         
         root.bind('<Escape>',self.confirmExit)
@@ -65,89 +61,79 @@ class GameWindow(Canvas):
     
     def continueGame(self,event=None):
         self.gamePaused=False
-        while self.resumeQueue:
-            self.after(0,self.resumeQueue.pop())
     
     def initGame(self):
         del self.menuObject
-        self.gameRunning=True
+        
         self.score = CurrentScore(self)
         self.hero.show()
-        self.after(0,self.enemy.mainloop)
         
+        self.resumeQueue = []
         self.lifeList = []
         lifePositionX = self.width/2-165
         for x in range(3):
             self.lifeList.append(HeroLife(self,lifePositionX))
             lifePositionX = lifePositionX + 30
             
+        self.activeEnemies=[]
+        self.deadEnemies=[]
         self.after(0,self.doOneFrame)
         self.after(0,self.createEnemy)
-        self.after(2000,self.createEnemy)
-        self.after(4000,self.createEnemy)
-        self.after(6000,self.createEnemy)
             
     def createEnemy(self):
-        random.choice(getEnemyClasses(self.level))(self)
-        #enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
-        #self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
+        enemy=eval(random.choice(getEnemiesByLevel(self,self.level)))(self)
+        self.activeEnemies.append(enemy)
+        self.after(randint(100,3000)/(self.level*self.difficulty),self.createEnemy)
         
+    def killEnemy(self,enemy):
+        self.activeEnemies.remove(enemy)
+        self.deadEnemies.append(enemy)
+        
+    def deleteEnemy(self,enemy):
+        print "trying to delete enemy: " + str(enemy) + " from active.",
+        try:
+            self.activeEnemies.remove(enemy)
+            print " success"
+        except:
+            print "trying to delete enemy: " + str(enemy) + " from dead."
+            try:
+                self.deadEnemies.remove(enemy)
+                print " success"
+            except:
+                print str(enemy) + " no reference here."
+                
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
-        if self.gameRunning:
-            self.after(30,self.doOneFrame)  ######### DEBUG ########## should be 2 to 30
-            root.update()
-        elif self.gamePaused:
-            self.resumeQueue.append(self.doOneFrame)
-            root.update()
-        else:
-            self.gameTicker=self.gameTicker+1
-            ### Skriv kod efter här för att visa en frame
-            #self.activeEnemies[0].walk(self,1)
-            self.enemy.createRandom()
-            self.enemy.moveAll()
-            self.enemy.missedEnemy()
-            
-            root.update()
-    
+        self.after(30,self.doOneFrame)
+        ### Skriv kod efter här för att visa en frame
+        #self.activeEnemies[0].walk(self,1)
+        
     def gameOver(self):
         self.gameOverText = self.create_text(self.width/2,self.height/2,text="Game Over",anchor='c',fill='black',font=(self.font,36,"bold"))
-        self.textObject=Text(self,self.width/2,self.height/2+100,text="Play again",callback=self.restartGame,color='black',font=(self.font,28,"bold"))
-    
-    def restartGame(self):
-        pass
         
-    
+        root.update()
+        
+
 class StoryTeller(GameObject):
 	def __init__(self,game):
-            self.level1Text = "Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart"
-            self.level2Text = "Oh my good, these animals are CRAZY! \nI have an idea, lets dig a river through our lands, \nmaybe that will keep the animals away. \n\nRegards, \nLennart"
-            self.level3Text = "Looks like the river is to small for theese even \ncrazier animals. \nBut hey, I have an even CRAZIER idea. \nI have some dynamites in my basement, lets use them \nto blow up some more land. \nIm sure that will stop the animals from destroying our farms. \nGood luck! \n\nRegards, \nLennart"
-            self.victoryText = "If you read this I assume that you are still alive \nand have defeated the CRAZY big boat of wild animals. \nI saw them, they loaded the boat with all the remainings \nof their army. Our farms are safe now. \nCongratulations! \n\nGreetings, \nLennart"
-            self.storyTexts = [self.level1Text,self.level2Text,self.level3Text,self.victoryText]
+            #self.tag="storyTeller" + str(hash(self))
             game.background=Background(game)
             x,y = game.width/2,game.height/2
             GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
-            self.textObject=Text(game,x,y,text=self.storyTexts[game.level-1],callback=self.storyTellerOnClick,color='black',font=game.storyFont)
-            
+            self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick,color='black',font=game.storyFont)
+            #Oh my good, these animals are CRAZY! \nI have an idea, lets dig a river through our lands, \nmaybe that will keep the animals away. \n\nRegards, \nLennart"
+            #Looks like the river is to small for theese even crazier animals. \nBut hey, I have an even CRAZIER idea. \nI have some old dynamites in my basement, lets use them to blow up some more land. \Im sure that will stop the animals from destroying our farms. \nGood luck! \n\nRegards, \nLennart
+            #If you read this I assume that you are still alive \nand have defeated the CRAZY big boat of wild animals. \nI saw them, they loaded the boat with all the remainings \of their army. Our farms are now safe. \nCongratulations! \n\nGreetings, \nLennart \n\nScore: " + currentScore
         def storyTellerOnClick(self,event):
+            #self.game.delete(self.tag)
             self.game.delete(self.objectId)
             del self.textObject
             self.game.initGame()
             
 class CurrentScore():
-    def __init__(self,game):
-        self.game=game
-        self.currentScore = 0
-        self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
-        
-    def addPoint(self):
-        self.currentScore = self.game.score.currentScore + 1
-        self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
-        if(self.currentScore == self.game.level*50):
-            print "Boss is coming"
-
-
+	def __init__(self,game):
+		self.currentScore = 0
+		self.scoreText = game.create_text(game.width/2,40,text="Score: 0",anchor='c',fill='black',font=(game.font,20,"bold"))
 
 def main():
     game=GameWindow()

@@ -6,7 +6,7 @@ class Enemy(GameObject):
     
     Subclasses should have images numbered correct in a subfolder to images named <classname> in all lowercase characters. The folder should also contain a "dissabled image" that should be in alpabetically last order. These images will be avalible as ImageTk.PhotoImage objects in the variables 'images' and 'eliminatedImage' respectivly.'''
     
-    speed=0.5 # Never above MAX_SPEED (CraAAaaAAaaZy fast). well... should be at least.....   FIXME DEBUG
+    speed=0.1 # Never above MAX_SPEED (CraAAaaAAaaZy fast). well... should be at least.....   FIXME DEBUG
     MAX_SPEED=1.0
     hp=1
     movePixels=-1
@@ -15,7 +15,7 @@ class Enemy(GameObject):
     deadEnemies=[]
     currentTics=0.
     stepsTaken=0
-    stepSize=2 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
+    stepSize=4 ######## Pixels moved per iteration, a value of 1 to 5 is ok ########  FIXME DEBUG
     animationRunning=False
     
     def __init__(self,game):
@@ -69,7 +69,7 @@ class Enemy(GameObject):
         #print gc.get_referents(self)
     
     def eliminate(self):
-        x,y = self.game.coords(self.tag)
+        x,y = self.game.coords(self.objectId)
         self.eliminated=True
         
         self.activeEnemies.remove(self)
@@ -79,7 +79,7 @@ class Enemy(GameObject):
         self.objectId=self.eliminatedId
         self.game.dtag(self.objectId,self.classTag)
         self.game.tag_bind(self.objectId,'<Button-1>',self.game.hero.heroShoot)
-        self.game.itemconfig(self.objectId,state='normal')
+        self.game.itemconfig(self.objectId,image=self.eliminatedImage,state='normal')
         
         del self.objectIdsCycle
         del self.objectIds
@@ -95,15 +95,16 @@ class Enemy(GameObject):
     @classmethod
     def moveAll(cls,game,tics):
         maxSpeed=Enemy.MAX_SPEED-game.difficulty/6.0
-        print getEnemyClasses(game.level)
+        #print getEnemyClasses(game.level)
         for enemycls in getEnemyClasses(game.level):
             enemycls.currentTics=enemycls.currentTics+tics
-            print enemycls
-            print enemycls.currentTics
-            print maxSpeed
+            #print enemycls
+            #print enemycls.currentTics
+            #print maxSpeed
             if enemycls.currentTics>maxSpeed-enemycls.speed/2.0:
                 enemycls.currentTics=0
                 game.move(enemycls.classTag,-enemycls.stepSize,0)
+                game.itemconfig(enemycls.classTag,image=next(enemycls.imageCycle))
                 enemycls.stepsTaken=enemycls.stepsTaken+enemycls.stepSize
     @classmethod
     def missedEnemy(cls,game):
@@ -166,23 +167,26 @@ class Boss(Enemy):
 class EnemyHandler:
     def __init__(self,game):
         self.game=game
-        self.lastTime=time.clock()
-    
+        self.enemyTicker=0
+        self.timeForEnemy=0
     def mainloop(self):
         if self.game.gameRunning:
-            self.game.after(15,self.mainloop)
-            currentTime=time.clock()
-            enemyTicker=currentTime-self.lastTime
+            self.game.after(30,self.mainloop)
+            self.enemyTicker=self.enemyTicker+0.1
             ####### Enemy main loop ##########
-            Enemy.moveAll(self.game,enemyTicker)
+            Enemy.moveAll(self.game,self.enemyTicker)
             Enemy.missedEnemy(self.game)
+            self.createEnemy()
             ####### Enemy main loop end ##########
+            self.game.update()
         elif self.game.gamePaused:
             self.game.resumeQueue.append(self.mainloop)
         else:
             print "EnemyHandler mainloop ended" ######## DEBUG ######
             
     def createEnemy(self):
+        self.
+        if >timeForEnemy
         random.choice(getEnemyClasses(self.level))(self)
 
 

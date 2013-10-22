@@ -73,7 +73,7 @@ class GameWindow(Canvas):
         self.gameRunning=True
         self.score = CurrentScore(self)
         self.hero.show()
-        self.enemy.mainloop()
+        self.after(0,self.enemy.mainloop)
         
         self.lifeList = []
         lifePositionX = self.width/2-165
@@ -95,7 +95,7 @@ class GameWindow(Canvas):
     def doOneFrame(self):
         # Commented for debug. Uncomment to loop: 
         if self.gameRunning:
-            self.after(5,self.doOneFrame)  ######### DEBUG ########## should be 2 to 30
+            self.after(30,self.doOneFrame)  ######### DEBUG ########## should be 2 to 30
             root.update()
         elif self.gamePaused:
             self.resumeQueue.append(self.doOneFrame)
@@ -144,7 +144,7 @@ class CurrentScore():
     def addPoint(self):
         self.currentScore = self.game.score.currentScore + 1
         self.game.itemconfig(self.game.score.scoreText,text="Score: " + str(self.game.score.currentScore))
-        if(self.currentScore == game.level*50):
+        if(self.currentScore == self.game.level*50):
             print "Boss is coming"
 
 

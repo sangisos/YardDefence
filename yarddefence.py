@@ -123,6 +123,9 @@ class StoryTeller(GameObject):
             x,y = game.width/2,game.height/2
             GameObject.__init__(self,game,x,y,'c',self.storyTellerOnClick)
             self.textObject=Text(game,x,y,text="Dear Neighbour, \nYesterday my whole farm was attacked by a massive mob of \nWILD ANIMALS, they have eaten all my harvest. \nI am afraid that they are on their way to your farm right now. \nI hope you are prepared to protect your land! \n\nRegards,\nLennart",callback=self.storyTellerOnClick,color='black',font=game.storyFont)
+            #Oh my good, these animals are CRAZY! \nI have an idea, lets dig a river through our lands, \nmaybe that will keep the animals away. \n\nRegards, \nLennart"
+            #Looks like the river is to small for theese even crazier animals. \nBut hey, I have an even CRAZIER idea. \nI have some old dynamites in my basement, lets use them to blow up some more land. \Im sure that will stop the animals from destroying our farms. \nGood luck! \n\nRegards, \nLennart
+            #If you read this I assume that you are still alive \nand have defeated the CRAZY big boat of wild animals. \nI saw them, they loaded the boat with all the remainings \of their army. Our farms are now safe. \nCongratulations! \n\nGreetings, \nLennart \n\nScore: " + currentScore
         def storyTellerOnClick(self,event):
             #self.game.delete(self.tag)
             self.game.delete(self.objectId)
